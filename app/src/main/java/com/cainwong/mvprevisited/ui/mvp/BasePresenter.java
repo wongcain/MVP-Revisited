@@ -1,25 +1,30 @@
-package com.cainwong.mvprevisited.ui.common.mvp;
+package com.cainwong.mvprevisited.ui.mvp;
 
 import android.support.annotation.NonNull;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-public class BasePresenter<V> {
+public abstract class BasePresenter<V> {
 
     private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private V mVu;
 
-    public void attachView(V vu) {
+    public final void attachVu(V vu) {
         mVu = vu;
-
+        onVuAttached();
     }
 
-    public void detachView() {
-        mVu = null;
+    protected abstract void onVuAttached();
+
+    public final void detachVu() {
         mCompositeSubscription.clear();
+        onVuDetached();
+        mVu = null;
     }
+
+    protected abstract void onVuDetached();
 
     protected V getVu() {
         return mVu;

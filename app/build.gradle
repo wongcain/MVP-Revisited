@@ -43,7 +43,11 @@ dependencies {
     compile 'com.google.android.exoplayer:exoplayer:r1.5.9'
 
     // di
-    compile 'com.ath.fuel:Fuel:1.0.1'
+    // compile 'com.ath.fuel:Fuel:1.0.1'
+    compile 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.0.0-RC5'
+    compile 'com.github.stephanenicolas.toothpick:smoothie:1.0.0-RC5'
+    apt 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.0.0-RC5'
+    testCompile 'com.github.stephanenicolas.toothpick:toothpick-testing:1.0.0-RC5'
 
     // network
     compile 'com.squareup.retrofit2:retrofit:2.0.2'

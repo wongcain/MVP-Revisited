@@ -1,4 +1,4 @@
-package com.cainwong.mvprevisited.ui.common.lifecycle;
+package com.cainwong.mvprevisited.ui.lifecycle;
 
 import android.os.Bundle;
 
@@ -6,16 +6,21 @@ import com.jakewharton.rxrelay.PublishRelay;
 
 import rx.Observable;
 
-/**
- * Created by cainwong on 8/9/16.
- */
-public class AbsLifecycle implements Lifecycle{
+public class Lifecycle {
 
-    private final PublishRelay<Lifecycle.Event> mLifecycleRelay = PublishRelay.create();
+    public enum Event{
+        CREATE,
+        START,
+        RESUME,
+        PAUSE,
+        STOP,
+        DESTROY
+    }
+
+    private final PublishRelay<Event> mLifecycleRelay = PublishRelay.create();
     private final PublishRelay<Bundle> mSaveStateRelay = PublishRelay.create();
     private final PublishRelay<Bundle> mLoadStateRelay = PublishRelay.create();
 
-    @Override
     public void lifecycleEvent(Lifecycle.Event event) {
         mLifecycleRelay.call(event);
     }

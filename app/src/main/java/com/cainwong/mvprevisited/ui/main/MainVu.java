@@ -1,7 +1,7 @@
 package com.cainwong.mvprevisited.ui.main;
 
-interface MainVu {
+public interface MainVu {
 
-    void setMessage(String msg);
+    void loadHelloVu();
 
 }
