@@ -20,10 +20,13 @@ public class BaseActivity extends AppCompatActivity {
     @Inject
     Lifecycle mLifecycle;
 
+    @Inject
+    PlaceManager mPlaceManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initDI();
         super.onCreate(savedInstanceState);
+        initDI();
         initLifecycle(savedInstanceState);
     }
 
@@ -31,6 +34,9 @@ public class BaseActivity extends AppCompatActivity {
         Scope scope = Toothpick.openScopes(getApplication(), this);
         scope.installModules(new BaseActivityModule(this));
         Toothpick.inject(this, scope);
+        mPlaceManager.onGotoPlaceGlobal().subscribe(place -> {
+            PlaceScopeManager.initScopeForPlace(this, place);
+        });
     }
 
     private void initLifecycle(Bundle savedInstanceState){
@@ -71,12 +77,8 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         mLifecycle.lifecycleEvent(Lifecycle.Event.DESTROY);
-        Toothpick.closeScope(this);
+        PlaceScopeManager.closeAll(this);
         super.onDestroy();
-    }
-
-    protected Lifecycle getLifecycle() {
-        return mLifecycle;
     }
 
     private static class BaseActivityModule extends SmoothieSupportActivityModule {
@@ -84,8 +86,6 @@ public class BaseActivity extends AppCompatActivity {
         public BaseActivityModule(FragmentActivity activity) {
             super(activity);
             bind(Lifecycle.class).toInstance(new Lifecycle());
-            bind(PlaceManager.class).toInstance(new PlaceManager());
-            bind(PlaceScopeManager.class).toInstance(new PlaceScopeManager());
         }
 
     }

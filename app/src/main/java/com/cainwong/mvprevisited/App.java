@@ -3,6 +3,8 @@ package com.cainwong.mvprevisited;
 import android.app.Application;
 import android.util.Log;
 
+import com.cainwong.mvprevisited.ui.places.PlaceManager;
+
 import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
@@ -61,6 +63,7 @@ public class App extends Application {
 
         public AppModule(Application application) {
             super(application);
+            bind(PlaceManager.class).toInstance(new PlaceManager());
         }
     }
 

@@ -7,25 +7,19 @@ import android.widget.TextView;
 
 import com.cainwong.mvprevisited.R;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import toothpick.Scope;
-import toothpick.Toothpick;
+import timber.log.Timber;
 
 public class HelloView extends FrameLayout implements HelloVu {
 
-    @Inject
-    HelloPresenter mPresenter;
+    private final HelloPresenter mPresenter = new HelloPresenter();
 
     @BindView(R.id.msg)
     TextView mMsgView;
 
     public HelloView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Scope scope = Toothpick.openScopes(context.getApplicationContext(), context);
-        Toothpick.inject(this, scope);
     }
 
     @Override
@@ -36,6 +30,7 @@ public class HelloView extends FrameLayout implements HelloVu {
 
     @Override
     protected void onAttachedToWindow() {
+        Timber.d("onAttachedToWindow");
         super.onAttachedToWindow();
         mPresenter.attachVu(this);
     }

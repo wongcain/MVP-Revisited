@@ -5,7 +5,7 @@ import com.cainwong.mvprevisited.ui.places.Place;
 import com.cainwong.mvprevisited.ui.places.annotations.PlaceConfig;
 
 @PlaceConfig(modules = HelloModule.class)
-public class HelloPlace implements Place {
+public class HelloPlace implements Place<String> {
 
     private final String mMessage;
 
@@ -13,7 +13,10 @@ public class HelloPlace implements Place {
         mMessage = message;
     }
 
-    public String getMessage() {
+
+    @Override
+    public String getData() {
         return mMessage;
     }
+
 }

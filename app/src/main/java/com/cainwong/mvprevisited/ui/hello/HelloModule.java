@@ -5,6 +5,6 @@ import toothpick.config.Module;
 public class HelloModule extends Module {
 
     public HelloModule() {
-        bind(String.class).withName("test").toInstance("Hello from module!");
+        bind(HelloDep.class).toInstance(new HelloDep("Hello from module!"));
     }
 }

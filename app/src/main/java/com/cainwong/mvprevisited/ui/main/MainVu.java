@@ -1,6 +1,8 @@
 package com.cainwong.mvprevisited.ui.main;
 
-public interface MainVu {
+import com.cainwong.mvprevisited.ui.mvp.Vu;
+
+public interface MainVu extends Vu {
 
     void loadHelloVu();
 

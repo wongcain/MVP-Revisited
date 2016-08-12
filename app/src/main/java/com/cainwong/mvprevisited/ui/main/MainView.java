@@ -1,16 +1,13 @@
 package com.cainwong.mvprevisited.ui.main;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.cainwong.mvprevisited.R;
-
-import javax.inject.Inject;
+import com.cainwong.mvprevisited.ui.places.PlaceScopeManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,19 +16,13 @@ import toothpick.Toothpick;
 
 public class MainView extends FrameLayout implements MainVu {
 
-    @Inject
-    MainPresenter mPresenter;
-
-    @Inject
-    LayoutInflater mLayoutInflater;
+    private final MainPresenter mPresenter = new MainPresenter();
 
     @BindView(R.id.main_container)
     ViewGroup mMainContainer;
 
     public MainView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Scope scope = Toothpick.openScopes(context.getApplicationContext(), context);
-        Toothpick.inject(this, scope);
     }
 
     @Override
@@ -55,7 +46,7 @@ public class MainView extends FrameLayout implements MainVu {
     @Override
     public void loadHelloVu() {
         mMainContainer.removeAllViews();
-        mLayoutInflater.inflate(R.layout.hello_view, mMainContainer, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.hello_view, mMainContainer, true);
     }
 
 }

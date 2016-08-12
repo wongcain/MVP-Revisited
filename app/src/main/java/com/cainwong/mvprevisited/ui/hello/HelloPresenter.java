@@ -7,7 +7,12 @@ import com.cainwong.mvprevisited.ui.places.PlaceManager;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class HelloPresenter extends BasePresenter<HelloVu> {
+
+    @Inject
+    HelloDep mHelloDep;
 
     @Inject
     Resources mResources;
@@ -17,11 +22,14 @@ public class HelloPresenter extends BasePresenter<HelloVu> {
 
     @Override
     protected void onVuAttached() {
+        Timber.d("onVuAttached");
         addToAutoUnsubscribe(
                 mPlaceManager.onGotoPlace(HelloPlace.class).subscribe(helloPlace -> {
-                    getVu().setMessage(helloPlace.getMessage());
+                    getVu().setMessage(helloPlace.getData());
                 })
         );
+
+        Timber.d(mHelloDep.getMessage());
     }
 
     @Override

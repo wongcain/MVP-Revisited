@@ -1,6 +1,8 @@
 package com.cainwong.mvprevisited.ui.hello;
 
-public interface HelloVu {
+import com.cainwong.mvprevisited.ui.mvp.Vu;
+
+public interface HelloVu extends Vu {
 
     void setMessage(String message);
 

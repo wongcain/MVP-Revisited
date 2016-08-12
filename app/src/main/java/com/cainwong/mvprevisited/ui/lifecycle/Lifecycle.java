@@ -5,7 +5,9 @@ import android.os.Bundle;
 import com.jakewharton.rxrelay.PublishRelay;
 
 import rx.Observable;
+import toothpick.smoothie.annotations.ContextSingleton;
 
+@ContextSingleton
 public class Lifecycle {
 
     public enum Event{

@@ -1,18 +1,17 @@
 package com.cainwong.mvprevisited.ui.places;
 
-import android.app.Activity;
+import android.content.Context;
 
 import com.cainwong.mvprevisited.ui.places.annotations.PlaceConfig;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-
-
-import javax.inject.Inject;
+import java.util.WeakHashMap;
 
 import timber.log.Timber;
 import toothpick.Scope;
@@ -21,29 +20,26 @@ import toothpick.config.Module;
 
 public class PlaceScopeManager {
 
-    @Inject
-    Activity mActivity;
-
-    @Inject
-    PlaceManager mPlaceManager;
+    private static final WeakHashMap<Context, PlaceScopeManager> MANAGERS = new WeakHashMap<>();
 
     private final Set<Class<? extends Place>> openPlaceScopes = new HashSet<>();
-
+    private WeakReference<Context> mContext;
     private Scope mScope;
 
-    public PlaceScopeManager() {
-        mPlaceManager.onGotoPlaceGlobal().subscribe(place -> setScopeForPlace(place));
+    private PlaceScopeManager(Context context) {
+        mContext = new WeakReference<Context>(context);
+        mScope = Toothpick.openScopes(mContext.get().getApplicationContext(), mContext.get());
     }
 
-    private synchronized void setScopeForPlace(Place place){
+    private synchronized void initScopeForPlace(Place place){
 
         // stack for holding the hierarchy of place classes
         Stack<Class<? extends Place>> hierarchyStack = getParentHierarchyForPlace(place.getClass());
 
         // create list for holding scope keys, and pre-populate with application and context
         List<Object> scopeKeys = new ArrayList<>();
-        scopeKeys.add(mActivity.getApplication());
-        scopeKeys.add(mActivity);
+        scopeKeys.add(mContext.get().getApplicationContext());
+        scopeKeys.add(mContext.get());
 
         // initialize default scope (application, context)
         Scope scope = Toothpick.openScopes(scopeKeys.toArray());
@@ -112,8 +108,37 @@ public class PlaceScopeManager {
         }
     }
 
-    public Scope getScope(){
+    private Scope getCurrentScope(){
         return mScope;
     }
 
+    private void closeAll(){
+        for(Class placeClass: openPlaceScopes){
+            Toothpick.closeScope(placeClass);
+        }
+        openPlaceScopes.clear();
+        Toothpick.closeScope(mContext);
+        mContext = null;
+    }
+
+
+
+    public static void initScopeForPlace(Context context, Place place){
+        getManager(context).initScopeForPlace(place);
+    }
+
+    public static Scope getCurrentScope(Context context){
+        return getManager(context).getCurrentScope();
+    }
+
+    public static void closeAll(Context context){
+        getManager(context).closeAll();
+    }
+
+    private static PlaceScopeManager getManager(Context context){
+        if(!MANAGERS.containsKey(context)){
+            MANAGERS.put(context, new PlaceScopeManager(context));
+        }
+        return MANAGERS.get(context);
+    }
 }

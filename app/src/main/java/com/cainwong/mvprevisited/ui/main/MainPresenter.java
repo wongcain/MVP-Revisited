@@ -4,7 +4,6 @@ import com.cainwong.mvprevisited.ui.hello.HelloPlace;
 import com.cainwong.mvprevisited.ui.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.ui.mvp.BasePresenter;
 import com.cainwong.mvprevisited.ui.places.PlaceManager;
-import com.jakewharton.rxrelay.PublishRelay;
 
 import javax.inject.Inject;
 
@@ -18,8 +17,6 @@ class MainPresenter extends BasePresenter<MainVu> {
 
     @Inject
     Lifecycle mLifecycle;
-
-    private final PublishRelay<String> msgRelay = PublishRelay.create();
 
     @Override
     protected void onVuAttached() {

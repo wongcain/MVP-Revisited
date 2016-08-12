@@ -2,10 +2,14 @@ package com.cainwong.mvprevisited.ui.mvp;
 
 import android.support.annotation.NonNull;
 
+import com.cainwong.mvprevisited.ui.places.PlaceScopeManager;
+
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
+import toothpick.Scope;
+import toothpick.Toothpick;
 
-public abstract class BasePresenter<V> {
+public abstract class BasePresenter<V extends Vu> {
 
     private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
@@ -13,6 +17,8 @@ public abstract class BasePresenter<V> {
 
     public final void attachVu(V vu) {
         mVu = vu;
+        Scope scope = PlaceScopeManager.getCurrentScope(vu.getContext());
+        Toothpick.inject(this, scope);
         onVuAttached();
     }
 
