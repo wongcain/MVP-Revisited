@@ -37,7 +37,7 @@ public class PlaceManager {
         if(!tryBack || goBackToPlace(place)) {
             Class clazz = place.getClass();
             if (!placeRelays.containsKey(clazz)) {
-                Timber.w("No handler registered for Place: %s", clazz.getSimpleName());
+                Timber.e("No handler registered for Place: %s", clazz.getSimpleName());
             } else {
                 history.add(place);
                 callPlace(place);
@@ -59,7 +59,7 @@ public class PlaceManager {
         boolean success = false;
         int pos = history.search(place);
         if(pos > 0){
-            Timber.w("Place not found in histort=y: %s", place.toString());
+            Timber.e("Place not found in histort=y: %s", place.toString());
         } else {
             for(int i = 0; i<pos; i++){
                 history.pop();

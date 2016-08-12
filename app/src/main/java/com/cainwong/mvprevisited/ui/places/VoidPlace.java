@@ -1,4 +1,4 @@
 package com.cainwong.mvprevisited.ui.places;
 
-public interface IPlace {
+public class VoidPlace implements Place {
 }

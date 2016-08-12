@@ -2,7 +2,6 @@ package com.cainwong.mvprevisited.ui.hello;
 
 import android.content.res.Resources;
 
-import com.cainwong.mvprevisited.R;
 import com.cainwong.mvprevisited.ui.mvp.BasePresenter;
 import com.cainwong.mvprevisited.ui.places.PlaceManager;
 
@@ -18,10 +17,9 @@ public class HelloPresenter extends BasePresenter<HelloVu> {
 
     @Override
     protected void onVuAttached() {
-        getVu().setMessage(mResources.getString(R.string.hello));
         addToAutoUnsubscribe(
                 mPlaceManager.onGotoPlace(HelloPlace.class).subscribe(helloPlace -> {
-                    getVu().setMessage(helloPlace.getParam());
+                    getVu().setMessage(helloPlace.getMessage());
                 })
         );
     }
