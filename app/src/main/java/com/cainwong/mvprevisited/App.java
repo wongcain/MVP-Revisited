@@ -3,16 +3,20 @@ package com.cainwong.mvprevisited;
 import android.app.Application;
 import android.util.Log;
 
-import com.cainwong.mvprevisited.ui.places.PlaceManager;
+import com.cainwong.mvprevisited.core.di.Io;
+import com.cainwong.mvprevisited.core.di.Ui;
+import com.cainwong.mvprevisited.core.places.PlaceManager;
+import com.cainwong.mvprevisited.core.di.ScopeManager;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
 import toothpick.smoothie.module.SmoothieApplicationModule;
 
-/**
- * Created by cainwong on 8/7/16.
- */
 public class App extends Application {
 
     @Override
@@ -20,10 +24,11 @@ public class App extends Application {
         super.onCreate();
         initDI();
         initLogging();
+        initFresco();
     }
 
     private void initDI(){
-        Scope appScope = Toothpick.openScope(this);
+        Scope appScope = ScopeManager.getCurrentScope(this);
         appScope.installModules(new AppModule(this));
     }
 
@@ -33,6 +38,10 @@ public class App extends Application {
         } else {
             Timber.plant(new CrashReportingTree());
         }
+    }
+
+    private void initFresco(){
+        Fresco.initialize(this);
     }
 
     @Override
@@ -64,6 +73,8 @@ public class App extends Application {
         public AppModule(Application application) {
             super(application);
             bind(PlaceManager.class).toInstance(new PlaceManager());
+            bind(Scheduler.class).withName(Io.class).toInstance(Schedulers.io());
+            bind(Scheduler.class).withName(Ui.class).toInstance(AndroidSchedulers.mainThread());
         }
     }
 
