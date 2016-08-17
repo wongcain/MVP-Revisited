@@ -1,10 +1,14 @@
 package com.cainwong.mvprevisited.giphy.random;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.cainwong.mvprevisited.R;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -16,6 +20,8 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
 
     @BindView(R.id.random_image)
     SimpleDraweeView randomImage;
+
+    Toast mToast;
 
     public RandomGiphyVuFramelayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,6 +47,23 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
 
     @Override
     public void setImgUrl(String imgUrl) {
-        randomImage.setImageURI(imgUrl);
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(imgUrl).setAutoPlayAnimations(true).build();
+        randomImage.setController(controller);
     }
+
+    @Override
+    public void showMessage(String msg) {
+        mToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
+        mToast.show();
+    }
+
+    @Override
+    public void clearMessage() {
+        if(mToast!=null){
+            mToast.cancel();
+            mToast = null;
+        }
+    }
+
 }

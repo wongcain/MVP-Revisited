@@ -7,10 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
 import com.cainwong.mvprevisited.core.di.ScopeManager;
+import com.cainwong.mvprevisited.core.rx.SimpleRxErrorLogger;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
 import toothpick.smoothie.module.SmoothieSupportActivityModule;
@@ -36,12 +36,8 @@ public class BaseActivity extends AppCompatActivity {
         scope.installModules(new BaseActivityModule(this));
         Toothpick.inject(this, scope);
         mPlaceManager.onGotoPlaceGlobal().subscribe(
-                place -> {
-                    ScopeManager.initScope(this, place);
-                },
-                throwable -> {
-                    Timber.e(throwable, "Error on global place subscription");
-                }
+                place -> ScopeManager.initScope(this, place),
+                new SimpleRxErrorLogger()
         );
     }
 

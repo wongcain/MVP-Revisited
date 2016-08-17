@@ -3,11 +3,10 @@ package com.cainwong.mvprevisited.giphy;
 import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
+import com.cainwong.mvprevisited.core.rx.SimpleRxErrorLogger;
 import com.cainwong.mvprevisited.giphy.random.RandomGiphyPlace;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
 
@@ -21,7 +20,7 @@ public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
                         place -> {
                             getVu().showRandom();
                         },
-                        throwable -> Timber.e(throwable, "Error in RandomGiphyPlace subscription")
+                        new SimpleRxErrorLogger()
                 )
         );
         addToAutoUnsubscribe(
@@ -29,7 +28,7 @@ public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
                         place -> {
                             mPlaceManager.gotoPlace(new RandomGiphyPlace(), PlaceManager.HistoryAction.REPLACE_TOP);
                         },
-                        throwable -> Timber.e(throwable, "Error in GiphyPlace subscription")
+                        new SimpleRxErrorLogger()
                 )
         );
     }
