@@ -3,9 +3,9 @@ package com.cainwong.mvprevisited.core.network;
 import android.support.annotation.NonNull;
 
 import com.cainwong.mvprevisited.core.di.Io;
+import com.cainwong.mvprevisited.core.rx.Errors;
 import com.cainwong.mvprevisited.core.rx.Funcs;
 import com.cainwong.mvprevisited.core.rx.Results;
-import com.cainwong.mvprevisited.core.rx.SimpleRxErrorLogger;
 import com.jakewharton.rxrelay.PublishRelay;
 
 import javax.inject.Inject;
@@ -51,11 +51,11 @@ public abstract class NetworkManager<T> {
                 .map(listResult -> listResult.response().body())
                 .doOnNext(mResultRelay::call)
                 .subscribe(ignored -> mLoadingStateRelay.call(LoadingState.IDLE),
-                        new SimpleRxErrorLogger()));
+                        Errors.log()));
 
         mCompositeSubscription.add(result.filter(Funcs.not(Results.isSuccessful()))
                 .subscribe(ignored -> mLoadingStateRelay.call(LoadingState.ERROR),
-                        new SimpleRxErrorLogger()));
+                        Errors.log()));
     }
 
     public void refresh() {

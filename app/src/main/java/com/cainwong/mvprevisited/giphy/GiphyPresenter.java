@@ -3,32 +3,26 @@ package com.cainwong.mvprevisited.giphy;
 import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
-import com.cainwong.mvprevisited.core.rx.SimpleRxErrorLogger;
-import com.cainwong.mvprevisited.giphy.random.RandomGiphyPlace;
+import com.cainwong.mvprevisited.core.rx.Errors;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
 
     @Inject
     PlaceManager mPlaceManager;
 
+    @Inject
+    GiphySectionManager mGiphySectionManager;
+
     @Override
     protected void onVuAttached() {
         addToAutoUnsubscribe(
-                mPlaceManager.onGotoPlace(RandomGiphyPlace.class).subscribe(
-                        place -> {
-                            getVu().showRandom();
-                        },
-                        new SimpleRxErrorLogger()
-                )
-        );
-        addToAutoUnsubscribe(
-                mPlaceManager.onGotoPlace(GiphyPlace.class).subscribe(
-                        place -> {
-                            mPlaceManager.gotoPlace(new RandomGiphyPlace(), PlaceManager.HistoryAction.REPLACE_TOP);
-                        },
-                        new SimpleRxErrorLogger()
+                getVu().onSectionChanged().subscribe(
+                        mGiphySectionManager::setSection,
+                        Errors.log()
                 )
         );
     }
@@ -40,7 +34,10 @@ public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
 
     public interface GiphyVu extends Vu {
         void showTrending();
+
         void showRandom();
+
+        Observable<GiphySectionManager.GiphySection> onSectionChanged();
     }
 
 }

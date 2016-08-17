@@ -4,9 +4,9 @@ import android.app.Application;
 import android.util.Log;
 
 import com.cainwong.mvprevisited.core.di.Io;
+import com.cainwong.mvprevisited.core.di.ScopeManager;
 import com.cainwong.mvprevisited.core.di.Ui;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
-import com.cainwong.mvprevisited.core.di.ScopeManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import rx.Scheduler;

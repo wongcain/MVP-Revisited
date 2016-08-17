@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
+import com.cainwong.mvprevisited.core.di.ScopeManager;
 import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
-import com.cainwong.mvprevisited.core.di.ScopeManager;
-import com.cainwong.mvprevisited.core.rx.SimpleRxErrorLogger;
+import com.cainwong.mvprevisited.core.rx.Errors;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ public class BaseActivity extends AppCompatActivity {
         Toothpick.inject(this, scope);
         mPlaceManager.onGotoPlaceGlobal().subscribe(
                 place -> ScopeManager.initScope(this, place),
-                new SimpleRxErrorLogger()
+                Errors.log()
         );
     }
 

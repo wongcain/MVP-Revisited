@@ -5,6 +5,7 @@ import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
+import com.cainwong.mvprevisited.core.rx.Errors;
 import com.cainwong.mvprevisited.giphy.GiphyPlace;
 
 import javax.inject.Inject;
@@ -22,41 +23,31 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
 
     @Override
     protected void onVuAttached() {
+
+        // Subscribe to Places for which this presenter is responsible for loading
         addToAutoUnsubscribe(
                 mPlaceManager.onGotoPlace(GiphyPlace.class).subscribe(
-                        helloPlace -> {
-                            getVu().showGify();
-                        },
-                        throwable -> {
-                            Timber.e(throwable, "Error on GiphyPlace subscription");
-                        }
+                        helloPlace -> getVu().showGify(),
+                        Errors.log()
                 )
         );
 
+        // Subscribe to all Places for debug logging. Analytics could link in similarly
         if(BuildConfig.DEBUG) {
             addToAutoUnsubscribe(
                     mPlaceManager.onGotoPlaceGlobal().subscribe(
                             place -> Timber.d("GotoPlace: %s", place.getClass()),
-                            throwable -> Timber.e(throwable, "Error on global place subscription")
+                            Errors.log()
                     )
             );
         }
 
-        addToAutoUnsubscribe(
-                mLifecycle.onLifeCycleEvent().subscribe(
-                        event -> {
-                            Timber.d(mLifecycle.getClass().getSimpleName() + ": " + event.name());
-                        },
-                        throwable -> {
-                            Timber.e(throwable, "Error on lifecycle subscription");
-                        }
-                )
-        );
-
+        // Initialize first place
         if(mPlaceManager.getCurrentPlace()==null){
             Timber.d("Initializing first place");
             mPlaceManager.gotoPlace(new GiphyPlace());
         }
+
     }
 
     @Override

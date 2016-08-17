@@ -1,5 +1,6 @@
-package com.cainwong.mvprevisited.api.giphy;
+package com.cainwong.mvprevisited.giphy;
 
+import com.cainwong.mvprevisited.api.giphy.GiphyApi;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,5 +31,7 @@ public class GiphyModule extends Module {
                 .build();
 
         bind(GiphyApi.class).toInstance(retrofit.create(GiphyApi.class));
+        bind(GiphySectionManager.class).toInstance(new GiphySectionManager());
+
     }
 }

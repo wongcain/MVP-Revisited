@@ -1,13 +1,15 @@
 package com.cainwong.mvprevisited.giphy.random;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.cainwong.mvprevisited.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -31,6 +33,9 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this);
+        GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
+                .setProgressBarImage(new ProgressBarDrawable()).build();
+        randomImage.setHierarchy(hierarchy);
     }
 
     @Override

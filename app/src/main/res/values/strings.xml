@@ -3,4 +3,6 @@
     <string name="hello">Hello MVP!</string>
     <string name="loading">Loading…</string>
     <string name="error">Error</string>
+    <string name="random">Random</string>
+    <string name="trending">Trending</string>
 </resources>

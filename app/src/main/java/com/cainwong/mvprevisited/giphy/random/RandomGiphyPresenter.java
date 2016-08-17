@@ -11,7 +11,9 @@ import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
 import com.cainwong.mvprevisited.core.network.NetworkManager;
-import com.cainwong.mvprevisited.core.rx.SimpleRxErrorLogger;
+import com.cainwong.mvprevisited.core.rx.Errors;
+import com.cainwong.mvprevisited.core.rx.Funcs;
+import com.cainwong.mvprevisited.giphy.GiphySectionManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +42,9 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
     @Inject
     Lifecycle mLifecycle;
 
+    @Inject
+    GiphySectionManager mGiphySectionManager;
+
     private Subscription pollingSubscription;
 
     @Override
@@ -54,7 +59,7 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
                         .observeOn(mUiScheduler)
                         .subscribe(
                                 this::handleLoadingState,
-                                new SimpleRxErrorLogger()
+                                Errors.log()
                         )
         );
 
@@ -65,7 +70,7 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
                         .map(response -> response.getImage().getImageUrl())
                         .subscribe(
                                 this::handleImgUrl,
-                                new SimpleRxErrorLogger()
+                                Errors.log()
                         )
         );
 
@@ -73,12 +78,34 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
         addToAutoUnsubscribe(
                 mLifecycle.onLifeCycleEvent().subscribe(
                         this::handleLifecycleEvent,
-                        new SimpleRxErrorLogger()
+                        Errors.log()
                 )
         );
 
-        // initialize polling
+        // bind polling to section changes (view pager)
+        addToAutoUnsubscribe(
+                mGiphySectionManager.onSetSection()
+                        .filter(Funcs.isEqual(GiphySectionManager.GiphySection.RANDOM))
+                        .subscribe(
+                                ignore -> startPolling(),
+                                Errors.log()
+                        )
+        );
+        addToAutoUnsubscribe(
+                mGiphySectionManager.onSetSection()
+                        .filter(Funcs.isNotEqual(GiphySectionManager.GiphySection.RANDOM))
+                        .subscribe(
+                                ignore -> stopPolling(),
+                                Errors.log()
+                        )
+        );
+
+        // trigger first img query
+        mNetworkManager.refresh();
+
+        // start polling
         startPolling();
+
     }
 
     private void handleLifecycleEvent(Lifecycle.Event event){
@@ -93,18 +120,19 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
     }
 
     private void startPolling() {
-        Timber.d("Starting polling");
-        pollingSubscription = Observable.interval(10, TimeUnit.SECONDS, mIoScheduler).subscribe(
-                ignore -> mNetworkManager.refresh(),
-                new SimpleRxErrorLogger()
-        );
-        addToAutoUnsubscribe(pollingSubscription);
-        mNetworkManager.refresh();
+        if(pollingSubscription==null || pollingSubscription.isUnsubscribed()) {
+            Timber.d("Starting polling");
+            pollingSubscription = Observable.interval(10, TimeUnit.SECONDS, mIoScheduler).subscribe(
+                    ignore -> mNetworkManager.refresh(),
+                    Errors.log()
+            );
+            addToAutoUnsubscribe(pollingSubscription);
+        }
     }
 
     private void stopPolling() {
-        Timber.d("Stopping polling");
         if(pollingSubscription!=null && !pollingSubscription.isUnsubscribed()){
+            Timber.d("Stopping polling");
             pollingSubscription.unsubscribe();
         }
     }
