@@ -8,40 +8,40 @@ public class RandomGiphImage {
 
     private Integer imageHeight;
 
-    private String fixedWidthDownsampledUrl;
+    private String fixedHeightDownsampledUrl;
 
-    private Integer fixedWidthDownsampledWidth;
+    private Integer fixedHeightDownsampledWidth;
 
-    private Integer fixedWidthDownsampledHeight;
+    private Integer fixedHeightDownsampledHeight;
 
-    private String fixedWidthSmallStillUrl;
+    private String fixedHeightSmallStillUrl;
 
-    private Integer fixedWidthSmallWidth;
+    private Integer fixedHeightSmallWidth;
 
-    private Integer fixedWidthSmallHeight;
+    private Integer fixedHeightSmallHeight;
 
-    public Integer getFixedWidthSmallHeight() {
-        return fixedWidthSmallHeight;
+    public Integer getFixedHeightSmallHeight() {
+        return fixedHeightSmallHeight;
     }
 
-    public void setFixedWidthSmallHeight(Integer fixedWidthSmallHeight) {
-        this.fixedWidthSmallHeight = fixedWidthSmallHeight;
+    public void setFixedHeightSmallHeight(Integer fixedHeightSmallHeight) {
+        this.fixedHeightSmallHeight = fixedHeightSmallHeight;
     }
 
-    public String getFixedWidthSmallStillUrl() {
-        return fixedWidthSmallStillUrl;
+    public String getFixedHeightSmallStillUrl() {
+        return fixedHeightSmallStillUrl;
     }
 
-    public void setFixedWidthSmallStillUrl(String fixedWidthSmallStillUrl) {
-        this.fixedWidthSmallStillUrl = fixedWidthSmallStillUrl;
+    public void setFixedHeightSmallStillUrl(String fixedHeightSmallStillUrl) {
+        this.fixedHeightSmallStillUrl = fixedHeightSmallStillUrl;
     }
 
-    public Integer getFixedWidthSmallWidth() {
-        return fixedWidthSmallWidth;
+    public Integer getFixedHeightSmallWidth() {
+        return fixedHeightSmallWidth;
     }
 
-    public void setFixedWidthSmallWidth(Integer fixedWidthSmallWidth) {
-        this.fixedWidthSmallWidth = fixedWidthSmallWidth;
+    public void setFixedHeightSmallWidth(Integer fixedHeightSmallWidth) {
+        this.fixedHeightSmallWidth = fixedHeightSmallWidth;
     }
 
     public Integer getImageHeight() {
@@ -68,27 +68,27 @@ public class RandomGiphImage {
         this.imageWidth = imageWidth;
     }
 
-    public Integer getFixedWidthDownsampledHeight() {
-        return fixedWidthDownsampledHeight;
+    public Integer getFixedHeightDownsampledHeight() {
+        return fixedHeightDownsampledHeight;
     }
 
-    public void setFixedWidthDownsampledHeight(Integer fixedWidthDownsampledHeight) {
-        this.fixedWidthDownsampledHeight = fixedWidthDownsampledHeight;
+    public void setFixedHeightDownsampledHeight(Integer fixedHeightDownsampledHeight) {
+        this.fixedHeightDownsampledHeight = fixedHeightDownsampledHeight;
     }
 
-    public String getFixedWidthDownsampledUrl() {
-        return fixedWidthDownsampledUrl;
+    public String getFixedHeightDownsampledUrl() {
+        return fixedHeightDownsampledUrl;
     }
 
-    public void setFixedWidthDownsampledUrl(String fixedWidthDownsampledUrl) {
-        this.fixedWidthDownsampledUrl = fixedWidthDownsampledUrl;
+    public void setFixedHeightDownsampledUrl(String fixedHeightDownsampledUrl) {
+        this.fixedHeightDownsampledUrl = fixedHeightDownsampledUrl;
     }
 
-    public Integer getFixedWidthDownsampledWidth() {
-        return fixedWidthDownsampledWidth;
+    public Integer getFixedHeightDownsampledWidth() {
+        return fixedHeightDownsampledWidth;
     }
 
-    public void setFixedWidthDownsampledWidth(Integer fixedWidthDownsampledWidth) {
-        this.fixedWidthDownsampledWidth = fixedWidthDownsampledWidth;
+    public void setFixedHeightDownsampledWidth(Integer fixedHeightDownsampledWidth) {
+        this.fixedHeightDownsampledWidth = fixedHeightDownsampledWidth;
     }
 }

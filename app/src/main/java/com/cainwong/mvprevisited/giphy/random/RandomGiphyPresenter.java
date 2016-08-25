@@ -4,9 +4,9 @@ import android.content.res.Resources;
 
 import com.cainwong.mvprevisited.R;
 import com.cainwong.mvprevisited.api.giphy.GiphyApi;
+import com.cainwong.mvprevisited.api.giphy.models.RandomGiphImage;
 import com.cainwong.mvprevisited.api.giphy.models.RandomGiphResponse;
 import com.cainwong.mvprevisited.core.di.Io;
-import com.cainwong.mvprevisited.core.di.Ui;
 import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
@@ -63,10 +63,9 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
         // subscribe to successful network responses
         addToAutoUnsubscribe(
                 mNetworkManager.onDataChanged()
+                        .map(RandomGiphResponse::getImage)
                         .subscribe(
-                                response -> {
-                                    getVu().setImgUrl(response.getImage().getFixedWidthDownsampledUrl(), response.getImage().getFixedWidthSmallStillUrl());
-                                },
+                                this::handleImage,
                                 Errors.log()
                         )
         );
@@ -99,6 +98,10 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
 
     }
 
+    private void handleImage(RandomGiphImage image){
+        getVu().setImgUrl(image.getFixedHeightDownsampledUrl(), image.getFixedHeightSmallStillUrl());
+    }
+
     private void handleLifecycleEvent(Lifecycle.Event event){
         switch (event) {
             case PAUSE:
@@ -111,9 +114,11 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
     }
 
     private void startPolling() {
+        if(pollingSubscription==null){
+            mNetworkManager.refresh();
+        }
         if(pollingSubscription==null || pollingSubscription.isUnsubscribed()) {
             Timber.d("Starting polling");
-            mNetworkManager.refresh();
             pollingSubscription = Observable.interval(POLLING_FREQUENCY_SECS, TimeUnit.SECONDS, mIoScheduler).subscribe(
                     ignore -> mNetworkManager.refresh(),
                     Errors.log()
