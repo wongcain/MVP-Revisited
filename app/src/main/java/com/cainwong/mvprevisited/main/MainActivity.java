@@ -3,6 +3,7 @@ package com.cainwong.mvprevisited.main;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.cainwong.mvprevisited.R;
 import com.cainwong.mvprevisited.core.BaseActivity;
@@ -35,10 +36,17 @@ public class MainActivity extends BaseActivity implements MainPresenter.MainVu {
 
     @Override
     public void showGify() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_container, GiphyVuFragment.newInstance())
-                .commit();
+        String tag = GiphyVuFragment.class.getName();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if(fragment==null || !fragment.isVisible()){
+            if(fragment==null){
+                fragment = GiphyVuFragment.newInstance();
+            }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, fragment, tag)
+                    .commit();
+        }
     }
 
     @Override

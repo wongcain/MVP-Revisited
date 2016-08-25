@@ -3,12 +3,12 @@ package com.cainwong.mvprevisited.core.rx;
 import retrofit2.adapter.rxjava.Result;
 import rx.functions.Func1;
 
-public final class Results {
+public final class RetroResults {
     private static final Func1<Result<?>, Boolean> SUCCESSFUL = result -> !result.isError() && result
             .response()
             .isSuccessful();
 
-    private Results() {
+    private RetroResults() {
         throw new AssertionError("No instances.");
     }
 

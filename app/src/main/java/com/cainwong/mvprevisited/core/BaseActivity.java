@@ -36,7 +36,7 @@ public class BaseActivity extends AppCompatActivity {
         scope.installModules(new BaseActivityModule(this));
         Toothpick.inject(this, scope);
         mPlaceManager.onGotoPlaceGlobal().subscribe(
-                place -> ScopeManager.initScope(this, place),
+                place -> ScopeManager.initScope(this, place.getHierarchy()),
                 Errors.log()
         );
     }

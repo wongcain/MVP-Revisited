@@ -1,6 +1,7 @@
 package com.cainwong.mvprevisited.giphy.random;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,7 +23,7 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
     private final RandomGiphyPresenter mPresenter = new RandomGiphyPresenter();
 
     @BindView(R.id.random_image)
-    SimpleDraweeView randomImage;
+    SimpleDraweeView mRandomImageView;
 
     Toast mToast;
 
@@ -35,7 +37,7 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
         ButterKnife.bind(this);
         GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                 .setProgressBarImage(new ProgressBarDrawable()).build();
-        randomImage.setHierarchy(hierarchy);
+        mRandomImageView.setHierarchy(hierarchy);
     }
 
     @Override
@@ -51,10 +53,14 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
     }
 
     @Override
-    public void setImgUrl(String imgUrl) {
+    public void setImgUrl(String imgUrl, String lowResImgUrl) {
         DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(imgUrl).setAutoPlayAnimations(true).build();
-        randomImage.setController(controller);
+                .setLowResImageRequest(ImageRequest.fromUri(lowResImgUrl))
+                .setImageRequest(ImageRequest.fromUri(imgUrl))
+                .setOldController(mRandomImageView.getController())
+                .setAutoPlayAnimations(true)
+                .build();
+        mRandomImageView.setController(controller);
     }
 
     @Override

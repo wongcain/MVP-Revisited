@@ -13,6 +13,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({ TYPE })
 public @interface ScopeConfig {
-    Class parent() default Void.class;
     Class<? extends Module>[] modules() default {};
 }

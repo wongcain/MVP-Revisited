@@ -6,9 +6,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -25,72 +25,72 @@ public class ScopeManager {
     private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private final Lock r = rwl.readLock();
     private final Lock w = rwl.writeLock();
-    private final Set<Class> mOpenScopes = new HashSet<>();
-    private WeakReference<Context> mContext;
+    private final List<Object> mPreviousKeys = new LinkedList<>();
+    private final WeakReference<Context> mContext;
+    private final boolean isApplicationContext;
     private Scope mScope;
 
     private ScopeManager(Context context) {
         mContext = new WeakReference<>(context);
-        mScope = context.equals(context.getApplicationContext())
-            ? Toothpick.openScopes(context)
+        isApplicationContext = context.equals(context.getApplicationContext());
+        mScope = isApplicationContext ? Toothpick.openScopes(context)
             : Toothpick.openScopes(context.getApplicationContext(), context);
     }
 
-    private synchronized void initScope(Object obj){
+    private synchronized void initScope(List<Object> keys){
         w.lock();
         try {
-            // stack for holding the hierarchy of obj classes
-            Stack<Class> hierarchyStack = getParentHierarchyForObject(obj.getClass());
 
-            // create list for holding scope keys, and pre-populate with application and context
-            List<Object> scopeKeys = new ArrayList<>();
-            scopeKeys.add(mContext.get().getApplicationContext());
-            scopeKeys.add(mContext.get());
-
-            // initialize default scope (application, context)
-            Scope scope = Toothpick.openScopes(scopeKeys.toArray());
-
-            // iterate through hierarchy updating scope and loading any modules defined for each obj
-            List<Class> newScopes = new ArrayList<>(hierarchyStack.size());
-            while (!hierarchyStack.isEmpty()) {
-                Class clazz = hierarchyStack.pop();
-                scopeKeys.add(clazz);
-                scope = Toothpick.openScopes(scopeKeys.toArray());
-                installModulesForScopePlace(scope, clazz);
-                newScopes.add(clazz);
+            // close previous scope hierarchy starting at first place of difference
+            Object keyToClose = null;
+            int i = 0;
+            for (Object key : mPreviousKeys) {
+                if ((i >= keys.size()) || !key.equals(keys.get(i++))) {
+                    keyToClose = key;
+                    break;
+                }
+            }
+            if (keyToClose != null) {
+                Toothpick.closeScope(keyToClose);
             }
 
-            // close unused scopes
-            closeUnusedScopes(newScopes);
+            // Create list for holding scope keys, and pre-populate with application and
+            // context (if different from application).
+            List<Object> listToOpen = new ArrayList<>();
+            if (!isApplicationContext) {
+                listToOpen.add(mContext.get().getApplicationContext());
+            }
+            listToOpen.add(mContext.get());
+
+            // Iterate through keys and open cumulative hierarchical scopes, installing any
+            // modules associated with each along the way
+            for (Object key : keys) {
+                listToOpen.add(key);
+                mScope = Toothpick.openScopes(listToOpen.toArray());
+                installModulesForScopeKey(key);
+            }
 
             // update current scope state
-            mOpenScopes.clear();
-            mOpenScopes.addAll(newScopes);
-            mScope = scope;
+            mPreviousKeys.clear();
+            mPreviousKeys.addAll(keys);
+        } catch (Exception e) {
+            Timber.wtf(e, "Error initializing scopes");
         } finally {
             w.unlock();
         }
     }
 
     /**
-     * build a hierarchy stack by iterating through parent place classes
-     */
-    private Stack<Class> getParentHierarchyForObject(Class clazz){
-        Stack<Class> hierarchyStack = new Stack<>();
-        while(clazz!=null){
-            hierarchyStack.add(clazz);
-            ScopeConfig config = (ScopeConfig) clazz.getAnnotation(ScopeConfig.class);
-            clazz = ((config==null) || Void.class.equals(config.parent()))
-                    ? null : config.parent();
-        }
-        return hierarchyStack;
-    }
-
-    /**
      * Given a scope and a place class, instantiate and install any modules configured for
      * the place into the scope
      */
-    private void installModulesForScopePlace(Scope scope, Class clazz){
+    private void installModulesForScopeKey(Object key){
+        Class clazz;
+        if(key instanceof Class){
+            clazz = (Class)key;
+        } else {
+            clazz = key.getClass();
+        }
         ScopeConfig config = (ScopeConfig) clazz.getAnnotation(ScopeConfig.class);
         if(config != null){
             List<Module> modules = new ArrayList<>();
@@ -102,17 +102,8 @@ public class ScopeManager {
                 }
             }
             if(!modules.isEmpty()){
-                scope.installModules(modules.toArray(new Module[modules.size()]));
+                mScope.installModules(modules.toArray(new Module[modules.size()]));
             }
-        }
-    }
-
-    private void closeUnusedScopes(Collection<Class> usedScopes){
-        Set<Class> toClose = new HashSet<>();
-        toClose.addAll(mOpenScopes);
-        toClose.removeAll(usedScopes);
-        for(Class c: toClose){
-            Toothpick.closeScope(c);
         }
     }
 
@@ -128,12 +119,7 @@ public class ScopeManager {
     private void closeAll(){
         w.lock();
         try {
-            for (Class placeClass : mOpenScopes) {
-                Toothpick.closeScope(placeClass);
-            }
-            mOpenScopes.clear();
-            Toothpick.closeScope(mContext);
-            mContext = null;
+            Toothpick.closeScope(mContext.get().getApplicationContext());
         } finally {
             w.unlock();
         }
@@ -141,8 +127,8 @@ public class ScopeManager {
 
 
 
-    public static void initScope(Context context, Object obj){
-        getManager(context).initScope(obj);
+    public static void initScope(Context context, List<Object> keys){
+        getManager(context).initScope(keys);
     }
 
     public static Scope getCurrentScope(Context context){

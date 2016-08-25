@@ -27,9 +27,7 @@ import timber.log.Timber;
 
 public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.RandomGifyVu> {
 
-    @Inject @Ui
-    Scheduler mUiScheduler;
-
+    private final int POLLING_FREQUENCY_SECS = 15;
     @Inject @Io
     Scheduler mIoScheduler;
 
@@ -56,7 +54,6 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
         // subscribe to loading state changes
         addToAutoUnsubscribe(
                 mNetworkManager.onLoadingStateChanged()
-                        .observeOn(mUiScheduler)
                         .subscribe(
                                 this::handleLoadingState,
                                 Errors.log()
@@ -66,10 +63,10 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
         // subscribe to successful network responses
         addToAutoUnsubscribe(
                 mNetworkManager.onDataChanged()
-                        .observeOn(mUiScheduler)
-                        .map(response -> response.getImage().getImageUrl())
                         .subscribe(
-                                this::handleImgUrl,
+                                response -> {
+                                    getVu().setImgUrl(response.getImage().getFixedWidthDownsampledUrl(), response.getImage().getFixedWidthSmallStillUrl());
+                                },
                                 Errors.log()
                         )
         );
@@ -100,12 +97,6 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
                         )
         );
 
-        // trigger first img query
-        mNetworkManager.refresh();
-
-        // start polling
-        startPolling();
-
     }
 
     private void handleLifecycleEvent(Lifecycle.Event event){
@@ -122,7 +113,8 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
     private void startPolling() {
         if(pollingSubscription==null || pollingSubscription.isUnsubscribed()) {
             Timber.d("Starting polling");
-            pollingSubscription = Observable.interval(10, TimeUnit.SECONDS, mIoScheduler).subscribe(
+            mNetworkManager.refresh();
+            pollingSubscription = Observable.interval(POLLING_FREQUENCY_SECS, TimeUnit.SECONDS, mIoScheduler).subscribe(
                     ignore -> mNetworkManager.refresh(),
                     Errors.log()
             );
@@ -155,13 +147,9 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
         }
     }
 
-    private void handleImgUrl(String imgUrl){
-        getVu().setImgUrl(imgUrl);
-    }
-
 
     public interface RandomGifyVu extends Vu {
-        void setImgUrl(String imgUrl);
+        void setImgUrl(String imgUrl, String lowResImgUrl);
         void showMessage(String msg);
         void clearMessage();
     }

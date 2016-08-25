@@ -26,8 +26,8 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
 
         // Subscribe to Places for which this presenter is responsible for loading
         addToAutoUnsubscribe(
-                mPlaceManager.onGotoPlace(GiphyPlace.class).subscribe(
-                        helloPlace -> getVu().showGify(),
+                mPlaceManager.onGotoPlaceOrDescendants(GiphyPlace.class).subscribe(
+                        place -> getVu().showGify(),
                         Errors.log()
                 )
         );

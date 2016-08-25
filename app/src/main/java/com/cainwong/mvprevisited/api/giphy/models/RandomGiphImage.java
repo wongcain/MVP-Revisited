@@ -8,6 +8,12 @@ public class RandomGiphImage {
 
     private Integer imageHeight;
 
+    private String fixedWidthDownsampledUrl;
+
+    private Integer fixedWidthDownsampledWidth;
+
+    private Integer fixedWidthDownsampledHeight;
+
     private String fixedWidthSmallStillUrl;
 
     private Integer fixedWidthSmallWidth;
@@ -60,5 +66,29 @@ public class RandomGiphImage {
 
     public void setImageWidth(Integer imageWidth) {
         this.imageWidth = imageWidth;
+    }
+
+    public Integer getFixedWidthDownsampledHeight() {
+        return fixedWidthDownsampledHeight;
+    }
+
+    public void setFixedWidthDownsampledHeight(Integer fixedWidthDownsampledHeight) {
+        this.fixedWidthDownsampledHeight = fixedWidthDownsampledHeight;
+    }
+
+    public String getFixedWidthDownsampledUrl() {
+        return fixedWidthDownsampledUrl;
+    }
+
+    public void setFixedWidthDownsampledUrl(String fixedWidthDownsampledUrl) {
+        this.fixedWidthDownsampledUrl = fixedWidthDownsampledUrl;
+    }
+
+    public Integer getFixedWidthDownsampledWidth() {
+        return fixedWidthDownsampledWidth;
+    }
+
+    public void setFixedWidthDownsampledWidth(Integer fixedWidthDownsampledWidth) {
+        this.fixedWidthDownsampledWidth = fixedWidthDownsampledWidth;
     }
 }

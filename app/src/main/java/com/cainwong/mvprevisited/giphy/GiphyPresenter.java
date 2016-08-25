@@ -4,6 +4,8 @@ import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
 import com.cainwong.mvprevisited.core.rx.Errors;
+import com.cainwong.mvprevisited.giphy.random.RandomGiphyPlace;
+import com.cainwong.mvprevisited.giphy.trending.TrendingGiphyPlace;
 
 import javax.inject.Inject;
 
@@ -19,6 +21,18 @@ public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
 
     @Override
     protected void onVuAttached() {
+        addToAutoUnsubscribe(
+                mPlaceManager.onGotoPlaceOrDescendants(TrendingGiphyPlace.class).subscribe(
+                        place -> getVu().showTrending(),
+                        Errors.log()
+                )
+        );
+        addToAutoUnsubscribe(
+                mPlaceManager.onGotoPlaceOrDescendants(RandomGiphyPlace.class).subscribe(
+                        place -> getVu().showRandom(),
+                        Errors.log()
+                )
+        );
         addToAutoUnsubscribe(
                 getVu().onSectionChanged().subscribe(
                         mGiphySectionManager::setSection,

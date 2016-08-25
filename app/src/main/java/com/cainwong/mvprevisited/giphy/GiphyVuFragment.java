@@ -56,12 +56,12 @@ public class GiphyVuFragment extends BaseFragment implements GiphyPresenter.Giph
 
     @Override
     public void showTrending() {
-        mPager.setCurrentItem(GiphySectionManager.GiphySection.RANDOM.getVal());
+        mPager.setCurrentItem(GiphySectionManager.GiphySection.TRENDING.getVal());
     }
 
     @Override
     public void showRandom() {
-        mPager.setCurrentItem(GiphySectionManager.GiphySection.TRENDING.getVal());
+        mPager.setCurrentItem(GiphySectionManager.GiphySection.RANDOM.getVal());
 
     }
 
@@ -80,12 +80,21 @@ public class GiphyVuFragment extends BaseFragment implements GiphyPresenter.Giph
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
+            ViewGroup v = null;
             if(GiphySectionManager.GiphySection.RANDOM.getVal() == position) {
-                return LayoutInflater.from(mContext).inflate(R.layout.random_giphy_vu_linearlayout, container);
+                v = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.random_giphy_vu_linearlayout, container, false);
             } else if(GiphySectionManager.GiphySection.TRENDING.getVal() == position) {
-                return new TextView(container.getContext(), null);
+                v = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.trending_giphy_vu_linearlayout, container, false);
             }
-            return null;
+            if(v!=null) {
+                container.addView(v);
+            }
+            return v;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object view) {
+            container.removeView((View) view);
         }
 
         @Override
@@ -100,12 +109,16 @@ public class GiphyVuFragment extends BaseFragment implements GiphyPresenter.Giph
 
         @Override
         public int getCount() {
-            return 2;
+            return GiphySectionManager.GiphySection.values().length;
         }
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
-            return object instanceof View;
+            return view == object;
         }
     }
+
+
+
+
 }

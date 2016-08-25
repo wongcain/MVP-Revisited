@@ -1,10 +1,13 @@
 package com.cainwong.mvprevisited.core.places;
 
-public class SimplePlace implements Place<Void> {
+public class SimplePlace extends Place<Void> {
 
-    @Override
-    public Void getData() {
-        return null;
+    public SimplePlace() {
+        super(null);
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

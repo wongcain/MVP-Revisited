@@ -3,9 +3,10 @@ package com.cainwong.mvprevisited.core.network;
 import android.support.annotation.NonNull;
 
 import com.cainwong.mvprevisited.core.di.Io;
+import com.cainwong.mvprevisited.core.di.Ui;
 import com.cainwong.mvprevisited.core.rx.Errors;
 import com.cainwong.mvprevisited.core.rx.Funcs;
-import com.cainwong.mvprevisited.core.rx.Results;
+import com.cainwong.mvprevisited.core.rx.RetroResults;
 import com.jakewharton.rxrelay.PublishRelay;
 
 import javax.inject.Inject;
@@ -32,9 +33,12 @@ public abstract class NetworkManager<T> {
     @Inject @Io
     Scheduler mIoScheduler;
 
+    @Inject @Ui
+    Scheduler mUiScheduler;
+
     @NonNull
     public Observable<LoadingState> onLoadingStateChanged() {
-        return mLoadingStateRelay;
+        return mLoadingStateRelay.observeOn(mUiScheduler);
     }
 
     public @NonNull PublishRelay<T> onDataChanged() {
@@ -44,16 +48,15 @@ public abstract class NetworkManager<T> {
     public void setup() {
         final Observable<Result<T>> result = mRefreshRelay
                 .doOnNext(ignored -> mLoadingStateRelay.call(LoadingState.LOADING))
-                .flatMap(ignored -> apiCallObservable().subscribeOn(mIoScheduler))
-                .share();
+                .flatMap(ignored -> apiCallObservable().subscribeOn(mIoScheduler)).observeOn(mUiScheduler).share();
 
-        mCompositeSubscription.add(result.filter(Results.isSuccessful())
+        mCompositeSubscription.add(result.filter(RetroResults.isSuccessful())
                 .map(listResult -> listResult.response().body())
                 .doOnNext(mResultRelay::call)
                 .subscribe(ignored -> mLoadingStateRelay.call(LoadingState.IDLE),
                         Errors.log()));
 
-        mCompositeSubscription.add(result.filter(Funcs.not(Results.isSuccessful()))
+        mCompositeSubscription.add(result.filter(Funcs.not(RetroResults.isSuccessful()))
                 .subscribe(ignored -> mLoadingStateRelay.call(LoadingState.ERROR),
                         Errors.log()));
     }
@@ -67,4 +70,5 @@ public abstract class NetworkManager<T> {
     }
 
     protected abstract Observable<Result<T>> apiCallObservable();
+
 }

@@ -7,8 +7,8 @@ import rx.Observable;
 public class GiphySectionManager {
 
     public enum GiphySection {
-        RANDOM(0),
-        TRENDING(1);
+        TRENDING(0),
+        RANDOM(1);
 
         private final int mVal;
 
@@ -22,8 +22,8 @@ public class GiphySectionManager {
 
         public static GiphySection fromVal(int val){
             switch(val){
-                case 0: return RANDOM;
-                case 1: return TRENDING;
+                case 0: return TRENDING;
+                case 1: return RANDOM;
             }
             return null;
         }

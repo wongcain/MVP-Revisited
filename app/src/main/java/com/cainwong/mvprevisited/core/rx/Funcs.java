@@ -18,4 +18,20 @@ public final class Funcs {
     public static <T> Func1<T, Boolean> isNotEqual(T b){
         return a -> !b.equals(a);
     }
+
+    public static <T> Func1<T, Boolean> instanceOf(Class clazz) {
+        return clazz::isInstance;
+    }
+
+    public static <T> Func1<T, Boolean> instanceOfAny(Class... clazzes) {
+        return obj -> {
+            for(Class clazz: clazzes){
+                if(clazz.isInstance(obj)){
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+
 }
