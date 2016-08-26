@@ -7,6 +7,7 @@ import com.cainwong.mvprevisited.core.mvp.Vu;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
 import com.cainwong.mvprevisited.core.rx.Errors;
 import com.cainwong.mvprevisited.giphy.GiphyPlace;
+import com.cainwong.mvprevisited.giphy.random.RandomGiphyPlace;
 
 import javax.inject.Inject;
 
@@ -45,7 +46,7 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
         // Initialize first place
         if(mPlaceManager.getCurrentPlace()==null){
             Timber.d("Initializing first place");
-            mPlaceManager.gotoPlace(new GiphyPlace());
+            mPlaceManager.gotoPlace(new RandomGiphyPlace("kittens"));
         }
 
     }

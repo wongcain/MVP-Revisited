@@ -1,5 +1,6 @@
 package com.cainwong.mvprevisited.giphy;
 
+import com.jakewharton.rxrelay.BehaviorRelay;
 import com.jakewharton.rxrelay.PublishRelay;
 
 import rx.Observable;
@@ -29,7 +30,7 @@ public class GiphySectionManager {
         }
     }
 
-    private final PublishRelay<GiphySection> mSectionRelay = PublishRelay.create();
+    private final BehaviorRelay<GiphySection> mSectionRelay = BehaviorRelay.create();
 
     public void setSection(GiphySection section){
         mSectionRelay.call(section);

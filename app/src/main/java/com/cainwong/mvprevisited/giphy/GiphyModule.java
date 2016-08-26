@@ -1,6 +1,6 @@
 package com.cainwong.mvprevisited.giphy;
 
-import com.cainwong.mvprevisited.api.giphy.GiphyApi;
+import com.cainwong.mvprevisited.giphy.api.GiphyApi;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

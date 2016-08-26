@@ -25,8 +25,6 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
     @BindView(R.id.random_image)
     SimpleDraweeView mRandomImageView;
 
-    Toast mToast;
-
     public RandomGiphyVuFramelayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -65,16 +63,7 @@ public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphy
 
     @Override
     public void showMessage(String msg) {
-        mToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
-        mToast.show();
-    }
-
-    @Override
-    public void clearMessage() {
-        if(mToast!=null){
-            mToast.cancel();
-            mToast = null;
-        }
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
 }

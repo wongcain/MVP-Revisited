@@ -36,8 +36,14 @@ public abstract class BasePresenter<V extends Vu> {
         return mVu;
     }
 
-    protected void addToAutoUnsubscribe(@NonNull final Subscription subscription) {
-        mCompositeSubscription.add(subscription);
+    protected void addToAutoUnsubscribe(@NonNull Subscription... subscriptions) {
+        for(Subscription subscription: subscriptions) {
+            mCompositeSubscription.add(subscription);
+        }
+    }
+
+    protected void removeSubscription(Subscription subscription) {
+        mCompositeSubscription.remove(subscription);
     }
 
 }

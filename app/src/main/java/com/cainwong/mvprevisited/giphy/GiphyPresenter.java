@@ -25,15 +25,11 @@ public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
                 mPlaceManager.onGotoPlaceOrDescendants(TrendingGiphyPlace.class).subscribe(
                         place -> getVu().showTrending(),
                         Errors.log()
-                )
-        );
-        addToAutoUnsubscribe(
+                ),
                 mPlaceManager.onGotoPlaceOrDescendants(RandomGiphyPlace.class).subscribe(
                         place -> getVu().showRandom(),
                         Errors.log()
-                )
-        );
-        addToAutoUnsubscribe(
+                ),
                 getVu().onSectionChanged().subscribe(
                         mGiphySectionManager::setSection,
                         Errors.log()
