@@ -3,6 +3,9 @@
     <string name="hello">Hello MVP!</string>
     <string name="loading">Loading…</string>
     <string name="error">Error</string>
-    <string name="random">Random</string>
+    <string name="random">Random Kittens</string>
     <string name="trending">Trending</string>
+    <string name="refresh">Refresh</string>
+    <string name="giphy">Giphy</string>
+    <string name="icndb">Chuck Norris</string>
 </resources>

@@ -8,9 +8,11 @@ import com.cainwong.mvprevisited.core.places.PlaceManager;
 import com.cainwong.mvprevisited.core.rx.Errors;
 import com.cainwong.mvprevisited.giphy.GiphyPlace;
 import com.cainwong.mvprevisited.giphy.random.RandomGiphyPlace;
+import com.cainwong.mvprevisited.icndb.IcndbPlace;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import timber.log.Timber;
 
 
@@ -30,6 +32,10 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
                 mPlaceManager.onGotoPlaceOrDescendants(GiphyPlace.class).subscribe(
                         place -> getVu().showGify(),
                         Errors.log()
+                ),
+                mPlaceManager.onGotoPlaceOrDescendants(IcndbPlace.class).subscribe(
+                        place -> getVu().showIcndb(),
+                        Errors.log()
                 )
         );
 
@@ -43,10 +49,22 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
             );
         }
 
+        // Subscribe to view clicks
+        addToAutoUnsubscribe(
+                getVu().onGiphyRequest().subscribe(
+                        ignore -> mPlaceManager.gotoPlace(new GiphyPlace()),
+                        Errors.log()
+                ),
+                getVu().onIcndbRequest().subscribe(
+                        ignore -> mPlaceManager.gotoPlace(new IcndbPlace()),
+                        Errors.log()
+                )
+        );
+
         // Initialize first place
         if(mPlaceManager.getCurrentPlace()==null){
             Timber.d("Initializing first place");
-            mPlaceManager.gotoPlace(new RandomGiphyPlace(null));
+            mPlaceManager.gotoPlace(new GiphyPlace());
         }
 
     }
@@ -57,8 +75,10 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
 
 
     public interface MainVu extends Vu {
-
+        Observable<Void> onGiphyRequest();
+        Observable<Void> onIcndbRequest();
         void showGify();
+        void showIcndb();
 
     }
 

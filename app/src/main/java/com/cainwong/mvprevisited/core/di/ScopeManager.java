@@ -24,14 +24,11 @@ public class ScopeManager {
     private final Lock w = rwl.writeLock();
     private final List<Object> mPreviousKeys = new LinkedList<>();
     private final WeakReference<Context> mContext;
-    private final boolean isApplicationContext;
     private Scope mScope;
 
     private ScopeManager(Context context) {
         mContext = new WeakReference<>(context);
-        isApplicationContext = context.equals(context.getApplicationContext());
-        mScope = isApplicationContext ? Toothpick.openScopes(context)
-            : Toothpick.openScopes(context.getApplicationContext(), context);
+        mScope = Toothpick.openScopes(context.getApplicationContext(), context);
     }
 
     private synchronized void initScope(List<Object> keys){
@@ -54,9 +51,7 @@ public class ScopeManager {
             // Create list for holding scope keys, and pre-populate with application and
             // context (if different from application).
             List<Object> listToOpen = new ArrayList<>();
-            if (!isApplicationContext) {
-                listToOpen.add(mContext.get().getApplicationContext());
-            }
+            listToOpen.add(mContext.get().getApplicationContext());
             listToOpen.add(mContext.get());
 
             // Iterate through keys and open cumulative hierarchical scopes, installing any

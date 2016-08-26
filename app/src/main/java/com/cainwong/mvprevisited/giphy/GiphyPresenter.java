@@ -11,8 +11,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.cainwong.mvprevisited.giphy.GiphySectionManager.GiphySection.RANDOM;
-
 public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
 
     @Inject

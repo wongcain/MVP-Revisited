@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
+import com.cainwong.mvprevisited.AppModule;
 import com.cainwong.mvprevisited.core.di.ScopeManager;
 import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.places.PlaceManager;
@@ -33,6 +34,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void initDI(){
+        Toothpick.openScope(getApplicationContext()).installModules(new AppModule(getApplication()));
         Scope scope = ScopeManager.getCurrentScope(this);
         scope.installModules(new BaseActivityModule(this));
         try {
@@ -100,7 +102,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(!mPlaceManager.goBack()) {
-            finish();
+            super.onBackPressed();
         }
     }
 }

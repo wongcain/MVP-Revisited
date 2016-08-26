@@ -1,15 +1,10 @@
-package com.cainwong.mvprevisited.giphy;
+package com.cainwong.mvprevisited.icndb;
 
 import com.cainwong.mvprevisited.BuildConfig;
-import com.cainwong.mvprevisited.giphy.api.GiphyApi;
-import com.cainwong.mvprevisited.giphy.api.models.TrendingGiphys;
-import com.cainwong.mvprevisited.giphy.trending.TrendingGiphyList;
+import com.cainwong.mvprevisited.icndb.api.IcndbApi;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -18,9 +13,10 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import toothpick.config.Module;
 
-public class GiphyModule extends Module {
+public class IcndbModule extends Module {
 
-    public GiphyModule() {
+    public IcndbModule() {
+
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -30,14 +26,12 @@ public class GiphyModule extends Module {
                 .create();
 
         // TODO move base URL
-        final Retrofit retrofit = new Retrofit.Builder().baseUrl("http://api.giphy.com")
+        final Retrofit retrofit = new Retrofit.Builder().baseUrl("http://api.icndb.com")
                 .client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        bind(GiphyApi.class).toInstance(retrofit.create(GiphyApi.class));
-        bind(GiphySectionManager.class).toInstance(new GiphySectionManager());
-        bind(List.class).withName(TrendingGiphyList.class).toInstance(new ArrayList<TrendingGiphys.Giphy>());
+        bind(IcndbApi.class).toInstance(retrofit.create(IcndbApi.class));
     }
 }

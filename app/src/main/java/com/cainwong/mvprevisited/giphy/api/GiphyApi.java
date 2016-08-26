@@ -12,10 +12,10 @@ public interface GiphyApi {
 
     String PUBLIC_API_KEY = "dc6zaTOxFJmzC";
 
-    @GET("v1/gifs/trending?rating=g&api_key=" + PUBLIC_API_KEY)
+    @GET("/v1/gifs/trending?rating=g&api_key=" + PUBLIC_API_KEY)
     Observable<Result<TrendingGiphys>> getTrending();
 
-    @GET("v1/gifs/random?rating=g&api_key=" + PUBLIC_API_KEY)
+    @GET("/v1/gifs/random?rating=g&api_key=" + PUBLIC_API_KEY)
     Observable<Result<RandomGiphy>> getRandom(@Query("tag") String tag);
 
 }

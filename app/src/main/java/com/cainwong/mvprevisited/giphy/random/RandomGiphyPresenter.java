@@ -64,6 +64,7 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
                                         mLastQuery = query;
                                     }
                                     mRandomGiphyDM.setQuery(mLastQuery);
+                                    startPolling();
                                 },
                                 Errors.log()),
 
