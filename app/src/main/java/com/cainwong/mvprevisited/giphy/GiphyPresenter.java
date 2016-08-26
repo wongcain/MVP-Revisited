@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static com.cainwong.mvprevisited.giphy.GiphySectionManager.GiphySection.RANDOM;
+
 public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
 
     @Inject
@@ -22,19 +24,41 @@ public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
     @Override
     protected void onVuAttached() {
         addToAutoUnsubscribe(
-                mPlaceManager.onGotoPlaceOrDescendants(TrendingGiphyPlace.class).subscribe(
-                        place -> getVu().showTrending(),
-                        Errors.log()
-                ),
-                mPlaceManager.onGotoPlaceOrDescendants(RandomGiphyPlace.class).subscribe(
-                        place -> getVu().showRandom(),
-                        Errors.log()
-                ),
-                getVu().onSectionChanged().subscribe(
-                        mGiphySectionManager::setSection,
-                        Errors.log()
-                )
+                mPlaceManager.onGotoPlace(GiphyPlace.class)
+                        .subscribe(
+                                place -> {
+                                    mPlaceManager.gotoPlace(new TrendingGiphyPlace(),
+                                            PlaceManager.HistoryAction.REPLACE_TOP);
+                                },
+                                Errors.log()
+                        ),
+                mPlaceManager.onGotoPlaceOrDescendants(TrendingGiphyPlace.class)
+                        .subscribe(
+                                place -> getVu().showTrending(),
+                                Errors.log()
+                        ),
+                mPlaceManager.onGotoPlaceOrDescendants(RandomGiphyPlace.class)
+                        .subscribe(
+                                place -> getVu().showRandom(),
+                                Errors.log()
+                        ),
+                getVu().onSectionChanged()
+                        .subscribe(
+                                this::handleSectionChanged,
+                                Errors.log()
+                        )
         );
+    }
+
+    private void handleSectionChanged(GiphySectionManager.GiphySection section) {
+        mGiphySectionManager.setSection(section);
+        switch (section) {
+            case RANDOM:
+                mPlaceManager.gotoPlace(new RandomGiphyPlace(null), PlaceManager.HistoryAction.REPLACE_TOP);
+                break;
+            case TRENDING:
+                mPlaceManager.gotoPlace(new TrendingGiphyPlace(), PlaceManager.HistoryAction.REPLACE_TOP);
+        }
     }
 
     @Override

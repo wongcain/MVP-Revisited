@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.cainwong.mvprevisited.R;
 import com.cainwong.mvprevisited.core.BaseFragment;
@@ -56,12 +55,18 @@ public class GiphyVuFragment extends BaseFragment implements GiphyPresenter.Giph
 
     @Override
     public void showTrending() {
-        mPager.setCurrentItem(GiphySectionManager.GiphySection.TRENDING.getVal());
+        int val = GiphySectionManager.GiphySection.TRENDING.getVal();
+        if(mPager.getCurrentItem()!=val) {
+            mPager.setCurrentItem(val);
+        }
     }
 
     @Override
     public void showRandom() {
-        mPager.setCurrentItem(GiphySectionManager.GiphySection.RANDOM.getVal());
+        int val = GiphySectionManager.GiphySection.RANDOM.getVal();
+        if(mPager.getCurrentItem()!=val) {
+            mPager.setCurrentItem(val);
+        }
 
     }
 
@@ -84,7 +89,7 @@ public class GiphyVuFragment extends BaseFragment implements GiphyPresenter.Giph
             if(GiphySectionManager.GiphySection.RANDOM.getVal() == position) {
                 v = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.random_giphy_vu_linearlayout, container, false);
             } else if(GiphySectionManager.GiphySection.TRENDING.getVal() == position) {
-                v = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.trending_giphy_vu_linearlayout, container, false);
+                v = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.trending_giphy_vu_framelayout, container, false);
             }
             if(v!=null) {
                 container.addView(v);

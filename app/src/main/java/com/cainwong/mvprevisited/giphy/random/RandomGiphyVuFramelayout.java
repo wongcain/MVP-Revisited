@@ -1,7 +1,6 @@
 package com.cainwong.mvprevisited.giphy.random;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.Toast;

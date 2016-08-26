@@ -10,20 +10,20 @@ import java.util.Map;
 public class TrendingGiphys {
 
     @SerializedName("data")
-    private List<Giph> giphys;
+    private List<Giphy> giphys;
 
     public TrendingGiphys() {
     }
 
-    public List<Giph> getGiphys() {
+    public List<Giphy> getGiphys() {
         return giphys;
     }
 
-    public void setGiphys(List<Giph> giphys) {
+    public void setGiphys(List<Giphy> giphys) {
         this.giphys = giphys;
     }
 
-    public static class Giph {
+    public static class Giphy {
 
         public enum ImageType{
             fixed_height,
@@ -43,15 +43,15 @@ public class TrendingGiphys {
             original_still
         }
 
-        private Map<ImageType, Image> images;
+        private Map<String, Image> images;
 
-        public Giph(){}
+        public Giphy(){}
 
-        public Map<ImageType, Image> getImages() {
+        public Map<String, Image> getImages() {
             return images;
         }
 
-        public void setImages(Map<ImageType, Image> images) {
+        public void setImages(Map<String, Image> images) {
             this.images = images;
         }
 
@@ -59,7 +59,7 @@ public class TrendingGiphys {
         public Image getImage(ImageType type){
             Image image = null;
             if(images != null){
-                image = images.get(type);
+                image = images.get(type.toString());
             }
             return image;
         }

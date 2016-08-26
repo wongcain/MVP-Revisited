@@ -3,15 +3,15 @@ package com.cainwong.mvprevisited.giphy.random;
 import android.content.res.Resources;
 
 import com.cainwong.mvprevisited.R;
-import com.cainwong.mvprevisited.core.places.PlaceManager;
-import com.cainwong.mvprevisited.giphy.api.models.RandomGiphy;
 import com.cainwong.mvprevisited.core.di.Io;
 import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
+import com.cainwong.mvprevisited.core.places.PlaceManager;
 import com.cainwong.mvprevisited.core.rx.Errors;
 import com.cainwong.mvprevisited.core.rx.Funcs;
 import com.cainwong.mvprevisited.giphy.GiphySectionManager;
+import com.cainwong.mvprevisited.giphy.api.models.RandomGiphy;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +24,7 @@ import timber.log.Timber;
 
 public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.RandomGifyVu> {
 
+    private final static String DEFAULT_QUERY = "kittens";
     private final int POLLING_FREQUENCY_SECS = 15;
 
     @Inject
@@ -31,7 +32,7 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
     Scheduler mIoScheduler;
 
     @Inject
-    RandomGiphyDM mGiphyMgr;
+    RandomGiphyDM mRandomGiphyDM;
 
     @Inject
     Resources mResources;
@@ -45,8 +46,9 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
     @Inject
     PlaceManager mPlaceManager;
 
-    private Subscription mGiphyApiSubscription;
+    private Subscription mRandomGiphyDMSubscription;
     private Subscription mPollingSubscription;
+    private String mLastQuery = DEFAULT_QUERY;
 
     @Override
     protected void onVuAttached() {
@@ -57,7 +59,11 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
                 mPlaceManager.onGotoPlace(RandomGiphyPlace.class)
                         .subscribe(
                                 place -> {
-                                    mGiphyMgr.setQuery(((RandomGiphyPlace) place).getData());
+                                    String query = ((RandomGiphyPlace) place).getData();
+                                    if(query!=null){
+                                        mLastQuery = query;
+                                    }
+                                    mRandomGiphyDM.setQuery(mLastQuery);
                                 },
                                 Errors.log()),
 
@@ -92,10 +98,10 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
     }
 
     private void getGiphy() {
-        if (mGiphyApiSubscription != null) {
-            removeSubscription(mGiphyApiSubscription);
+        if (mRandomGiphyDMSubscription != null) {
+            removeSubscription(mRandomGiphyDMSubscription);
         }
-        mGiphyApiSubscription = mGiphyMgr.getData()
+        mRandomGiphyDMSubscription = mRandomGiphyDM.getData()
                 .subscribe(
                         this::handleResponse,
                         throwable -> {
@@ -103,7 +109,7 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
                             Timber.w(throwable, "Error fetching image");
                         }
                 );
-        addToAutoUnsubscribe(mGiphyApiSubscription);
+        addToAutoUnsubscribe(mRandomGiphyDMSubscription);
     }
 
     private void handleResponse(RandomGiphy response) {

@@ -1,6 +1,7 @@
 package com.cainwong.mvprevisited;
 
 import android.app.Application;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import com.cainwong.mvprevisited.core.di.Io;
@@ -75,6 +76,7 @@ public class App extends Application {
             bind(PlaceManager.class).toInstance(new PlaceManager());
             bind(Scheduler.class).withName(Io.class).toInstance(Schedulers.io());
             bind(Scheduler.class).withName(Ui.class).toInstance(AndroidSchedulers.mainThread());
+            bind(LruCache.class).toInstance(new LruCache<String, Object>(1024 * 1024));
         }
     }
 

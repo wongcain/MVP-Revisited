@@ -142,12 +142,10 @@ public class PlaceManager {
         boolean success = false;
         w.lock();
         try {
-            if (mHistory.size() > 0) {
+            if (mHistory.size() > 1) {
                 Place place = mHistory.pop();
                 callPlace(place);
                 success = true;
-            } else {
-                mCurrentPlace = null;
             }
         } finally {
             w.unlock();

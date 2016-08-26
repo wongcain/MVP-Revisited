@@ -11,6 +11,7 @@ import com.cainwong.mvprevisited.core.rx.Errors;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
 import toothpick.smoothie.module.SmoothieSupportActivityModule;
@@ -34,11 +35,15 @@ public class BaseActivity extends AppCompatActivity {
     private void initDI(){
         Scope scope = ScopeManager.getCurrentScope(this);
         scope.installModules(new BaseActivityModule(this));
-        Toothpick.inject(this, scope);
-        mPlaceManager.onGotoPlaceGlobal().subscribe(
-                place -> ScopeManager.initScope(this, place.getHierarchy()),
-                Errors.log()
-        );
+        try {
+            Toothpick.inject(this, scope);
+            mPlaceManager.onGotoPlaceGlobal().subscribe(
+                    place -> ScopeManager.initScope(this, place.getHierarchy()),
+                    Errors.log()
+            );
+        } catch (Throwable t){
+            Timber.wtf(t, "Error initializing DI");
+        }
     }
 
     private void initLifecycle(Bundle savedInstanceState){
@@ -95,7 +100,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(!mPlaceManager.goBack()) {
-            super.onBackPressed();
+            finish();
         }
     }
 }

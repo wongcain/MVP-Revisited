@@ -1,7 +1,6 @@
 package com.cainwong.mvprevisited.giphy;
 
 import com.jakewharton.rxrelay.BehaviorRelay;
-import com.jakewharton.rxrelay.PublishRelay;
 
 import rx.Observable;
 

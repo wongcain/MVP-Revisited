@@ -46,7 +46,7 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
         // Initialize first place
         if(mPlaceManager.getCurrentPlace()==null){
             Timber.d("Initializing first place");
-            mPlaceManager.gotoPlace(new RandomGiphyPlace("kittens"));
+            mPlaceManager.gotoPlace(new RandomGiphyPlace(null));
         }
 
     }
