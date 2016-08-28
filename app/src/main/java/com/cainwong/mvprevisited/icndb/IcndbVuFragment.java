@@ -2,6 +2,8 @@ package com.cainwong.mvprevisited.icndb;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +11,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cainwong.mvprevisited.R;
-import com.cainwong.mvprevisited.core.BaseFragment;
 import com.jakewharton.rxbinding.view.RxView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class IcndbVuFragment extends BaseFragment implements IcndbPresenter.IcndbVu {
+public class IcndbVuFragment extends Fragment implements IcndbPresenter.IcndbVu {
 
     private final IcndbPresenter mPresenter = new IcndbPresenter();
 
@@ -47,7 +48,7 @@ public class IcndbVuFragment extends BaseFragment implements IcndbPresenter.Icnd
 
     @Override
     public void setJoke(String joke) {
-        mJokeTextView.setText(joke);
+        mJokeTextView.setText(Html.fromHtml(joke));
     }
 
     @Override

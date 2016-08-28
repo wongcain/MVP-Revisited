@@ -4,8 +4,11 @@ import android.os.Bundle;
 
 import com.jakewharton.rxrelay.PublishRelay;
 
+import javax.inject.Singleton;
+
 import rx.Observable;
 
+@Singleton
 public class Lifecycle {
 
     public enum Event{

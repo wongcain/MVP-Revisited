@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -11,14 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cainwong.mvprevisited.R;
-import com.cainwong.mvprevisited.core.BaseFragment;
 import com.jakewharton.rxbinding.support.v4.view.RxViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class GiphyVuFragment extends BaseFragment implements GiphyPresenter.GiphyVu {
+public class GiphyVuFragment extends Fragment implements GiphyPresenter.GiphyVu {
 
     private final GiphyPresenter mPresenter = new GiphyPresenter();
 

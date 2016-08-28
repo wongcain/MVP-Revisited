@@ -1,8 +1,10 @@
 package com.cainwong.mvprevisited.core.rx;
 
+import retrofit2.Response;
 import retrofit2.adapter.rxjava.Result;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public final class RetroResults {
 
@@ -15,7 +17,12 @@ public final class RetroResults {
             if(result.isError()){
                 return Observable.error(result.error());
             } else {
-                return Observable.just(result.response().body());
+                try {
+                    return Observable.just(result.response().body());
+                } catch (Throwable t){
+                    Timber.e(t, "Error handling result");
+                    return Observable.error(t);
+                }
             }
         };
     }

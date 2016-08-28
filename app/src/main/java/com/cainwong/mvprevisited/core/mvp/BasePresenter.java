@@ -6,8 +6,6 @@ import com.cainwong.mvprevisited.core.di.ScopeManager;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
-import toothpick.Scope;
-import toothpick.Toothpick;
 
 public abstract class BasePresenter<V extends Vu> {
 
@@ -17,8 +15,7 @@ public abstract class BasePresenter<V extends Vu> {
 
     public final void attachVu(V vu) {
         mVu = vu;
-        Scope scope = ScopeManager.getCurrentScope(vu.getContext());
-        Toothpick.inject(this, scope);
+        ScopeManager.inject(this);
         onVuAttached();
     }
 

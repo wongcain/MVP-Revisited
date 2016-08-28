@@ -2,11 +2,9 @@ package com.cainwong.mvprevisited.core.di;
 
 import android.content.Context;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -17,21 +15,19 @@ import toothpick.config.Module;
 
 public class ScopeManager {
 
-    private static final WeakHashMap<Context, ScopeManager> MANAGERS = new WeakHashMap<>();
+    private static final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    private static final Lock r = rwl.readLock();
+    private static final Lock w = rwl.writeLock();
+    private static final List<Object> mPreviousKeys = new LinkedList<>();
+    private static Context mAppContext;
+    private static Scope mScope;
 
-    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
-    private final Lock r = rwl.readLock();
-    private final Lock w = rwl.writeLock();
-    private final List<Object> mPreviousKeys = new LinkedList<>();
-    private final WeakReference<Context> mContext;
-    private Scope mScope;
-
-    private ScopeManager(Context context) {
-        mContext = new WeakReference<>(context);
-        mScope = Toothpick.openScopes(context.getApplicationContext(), context);
+    public static void init(Context context){
+        mAppContext = context.getApplicationContext();
+        mScope = Toothpick.openScopes(mAppContext);
     }
 
-    private synchronized void initScope(List<Object> keys){
+    public static void setScope(List<Object> keys){
         w.lock();
         try {
 
@@ -48,11 +44,9 @@ public class ScopeManager {
                 Toothpick.closeScope(keyToClose);
             }
 
-            // Create list for holding scope keys, and pre-populate with application and
-            // context (if different from application).
+            // Create list for holding scope keys, and pre-populate with application context
             List<Object> listToOpen = new ArrayList<>();
-            listToOpen.add(mContext.get().getApplicationContext());
-            listToOpen.add(mContext.get());
+            listToOpen.add(mAppContext);
 
             // Iterate through keys and open cumulative hierarchical scopes, installing any
             // modules associated with each along the way
@@ -71,12 +65,24 @@ public class ScopeManager {
             w.unlock();
         }
     }
+    public static void installModules(Module... modules){
+        mScope.installModules(modules);
+    }
+
+    public static void inject(Object obj){
+        r.lock();
+        try {
+            Toothpick.inject(obj, mScope);
+        } finally {
+            r.unlock();
+        }
+    }
 
     /**
      * Given a scope and a place class, instantiate and install any modules configured for
      * the place into the scope
      */
-    private void installModulesForScopeKey(Object key){
+    private static void installModulesForScopeKey(Object key){
         Class clazz;
         if(key instanceof Class){
             clazz = (Class)key;
@@ -97,45 +103,6 @@ public class ScopeManager {
                 mScope.installModules(modules.toArray(new Module[modules.size()]));
             }
         }
-    }
-
-    private Scope getCurrentScope(){
-        r.lock();
-        try {
-            return mScope;
-        } finally {
-            r.unlock();
-        }
-    }
-
-    private void closeAll(){
-        w.lock();
-        try {
-            Toothpick.closeScope(mContext.get().getApplicationContext());
-        } finally {
-            w.unlock();
-        }
-    }
-
-
-
-    public static void initScope(Context context, List<Object> keys){
-        getManager(context).initScope(keys);
-    }
-
-    public static Scope getCurrentScope(Context context){
-        return getManager(context).getCurrentScope();
-    }
-
-    public static void closeAll(Context context){
-        getManager(context).closeAll();
-    }
-
-    private static ScopeManager getManager(Context context){
-        if(!MANAGERS.containsKey(context)){
-            MANAGERS.put(context, new ScopeManager(context));
-        }
-        return MANAGERS.get(context);
     }
 
 }

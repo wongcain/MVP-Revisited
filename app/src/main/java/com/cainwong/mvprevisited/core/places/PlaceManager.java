@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.inject.Singleton;
+
 import rx.Observable;
 import timber.log.Timber;
 
 /**
  * Singleton class for handling app navigation
  */
+@Singleton
 public class PlaceManager {
 
     /**
