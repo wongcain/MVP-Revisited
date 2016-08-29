@@ -94,9 +94,14 @@ public class ScopeManager {
             List<Module> modules = new ArrayList<>();
             for(Class<? extends Module> moduleClass: config.modules()){
                 try {
-                    modules.add(moduleClass.newInstance());
+                    modules.add(mScope.getInstance(moduleClass));
                 } catch (Exception e) {
-                    Timber.e(e, "Error loading module %s", moduleClass.getName());
+                    Timber.e(e, "Error injecting module %s. Attempting to instantiate directly", moduleClass.getName());
+                    try {
+                        modules.add(moduleClass.newInstance());
+                    } catch (Exception e1) {
+                        Timber.e(e1, "Error loading module %s", moduleClass.getName());
+                    }
                 }
             }
             if(!modules.isEmpty()){

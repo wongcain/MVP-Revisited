@@ -1,7 +1,6 @@
 package com.cainwong.mvprevisited.core;
 
 import android.app.Application;
-import android.content.Context;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
@@ -15,6 +14,9 @@ import com.cainwong.mvprevisited.core.places.PlaceManager;
 import com.cainwong.mvprevisited.core.rx.Errors;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Scheduler;
@@ -22,9 +24,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import toothpick.Toothpick;
+import toothpick.config.Module;
 import toothpick.smoothie.module.SmoothieApplicationModule;
 
-public class BaseApplication extends Application {
+public abstract class BaseApplication extends Application {
 
     @Inject
     PlaceManager mPlaceManager;
@@ -52,7 +55,13 @@ public class BaseApplication extends Application {
 
     private void initDI(){
         ScopeManager.init(this);
-        ScopeManager.installModules(new AppModule(this));
+        List<Module> appModules = new ArrayList<>();
+        appModules.add(new BaseAppModule(this));
+        List<Module> configuredAppModules = getAppModules();
+        if(configuredAppModules!=null){
+            appModules.addAll(configuredAppModules);
+        }
+        ScopeManager.installModules(appModules.toArray(new Module[appModules.size()]));
         ScopeManager.inject(this);
     }
 
@@ -95,15 +104,16 @@ public class BaseApplication extends Application {
         }
     }
 
-    private static class AppModule extends SmoothieApplicationModule {
+    protected abstract List<Module> getAppModules();
 
-        public AppModule(Application app) {
+    private static class BaseAppModule extends SmoothieApplicationModule {
+
+        public BaseAppModule(Application app) {
             super(app);
             bind(Lifecycle.class);
             bind(ActivityLifecycleCallbacks.class).to(ActivityLifecycleCallbacksHandler.class);
             bind(Scheduler.class).withName(Io.class).toInstance(Schedulers.io());
             bind(Scheduler.class).withName(Ui.class).toInstance(AndroidSchedulers.mainThread());
-            bind(LruCache.class).toInstance(new LruCache<String, Object>(1024 * 1024));
         }
 
     }
