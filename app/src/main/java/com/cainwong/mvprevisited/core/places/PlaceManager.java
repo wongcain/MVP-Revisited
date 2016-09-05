@@ -6,6 +6,8 @@ import com.jakewharton.rxrelay.BehaviorRelay;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -24,7 +26,7 @@ public class PlaceManager {
      * Used when calling "GoToPlace" to control the effect on the history stack:
      *  - ADD: puts place on top of the stack
      *  - REPLACE_TOP: replaces the place on the top of the stack. (If stack is empty, same as ADD.)
-     *  - TRY_BACK_TO_EXACT_SAME: searches history for the same place. If found, pops the history
+     *  - TRY_BACK_TO_EQUAL: searches history for the same place. If found, pops the history
      *                            stack to the found place.  If not, performs ADD.  Places are found
      *                            using Stack.search(). You may need to override the equals() and
      *                            hashcode() in your Place object if you want matches on different
@@ -36,7 +38,7 @@ public class PlaceManager {
     public enum HistoryAction {
         ADD,
         REPLACE_TOP,
-        TRY_BACK_TO_EXACT_SAME,
+        TRY_BACK_TO_EQUAL,
         TRY_BACK_TO_SAME_TYPE,
         NONE
     }
@@ -109,22 +111,25 @@ public class PlaceManager {
         try {
             switch (historyAction) {
                 case ADD:
-                    mHistory.add(place);
+                    mHistory.push(place);
                     callPlace(place);
                     break;
                 case REPLACE_TOP:
-                    mHistory.poll();
+                    if(!mHistory.isEmpty()) {
+                        mHistory.pop();
+                    }
+                    mHistory.push(place);
                     callPlace(place);
                     break;
-                case TRY_BACK_TO_EXACT_SAME:
-                    if (!goBackToPlaceExact(place)) {
-                        mHistory.add(place);
+                case TRY_BACK_TO_EQUAL:
+                    if (!goBackToPlaceEqual(place)) {
+                        mHistory.push(place);
                         callPlace(place);
                     }
                     break;
                 case TRY_BACK_TO_SAME_TYPE:
                     if (!goBackToPlaceByType(place)) {
-                        mHistory.add(place);
+                        mHistory.push(place);
                         callPlace(place);
                     }
                     break;
@@ -135,6 +140,15 @@ public class PlaceManager {
         } finally {
             w.unlock();
         }
+
+    }
+
+    private void logHistory(){
+        StringBuilder sb = new StringBuilder("History: \n");
+        for(Place place: mHistory){
+            sb.append(place.toString()).append('\n');
+        }
+        Timber.d(sb.toString());
     }
 
     /**
@@ -146,8 +160,8 @@ public class PlaceManager {
         w.lock();
         try {
             if (mHistory.size() > 1) {
-                Place place = mHistory.pop();
-                callPlace(place);
+                mHistory.pop();
+                callPlace(mHistory.peek());
                 success = true;
             }
         } finally {
@@ -174,13 +188,13 @@ public class PlaceManager {
      * Places are found using Stack.search(). You may need to override the equals() and hashcode()
      * in your Place object if you want matches on different instances with the same payload.
      */
-    private boolean goBackToPlaceExact(Place place){
+    private boolean goBackToPlaceEqual(Place place){
         boolean success = false;
         int i = 0;
         for(Place p: mHistory){
             if(p.equals(place)){
                 for(int j=0; j<i; j++){
-                    mHistory.poll();
+                    mHistory.pop();
                 }
                 callPlace(p);
                 success = true;
@@ -201,7 +215,7 @@ public class PlaceManager {
         for(Place p: mHistory){
             if(p.getClass().equals(place.getClass())){
                 for(int j=0; j<i; j++){
-                    mHistory.poll();
+                    mHistory.pop();
                 }
                 callPlace(p);
                 success = true;
@@ -218,6 +232,7 @@ public class PlaceManager {
     private void callPlace(Place place){
         mPlaceRelay.call(place);
         mCurrentPlace = place;
+        logHistory();
     }
 
 }

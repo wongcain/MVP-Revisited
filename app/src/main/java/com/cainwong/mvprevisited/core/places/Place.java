@@ -1,11 +1,15 @@
 package com.cainwong.mvprevisited.core.places;
 
 
+import com.google.gson.Gson;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Place<T> {
+
+     private static final Gson GSON = new Gson();
 
      private final T mData;
 
@@ -31,6 +35,11 @@ public abstract class Place<T> {
 
      @Override
      public String toString() {
-          return this.getClass().getSimpleName() + ": " + mData;
+          return GSON.toJson(this);
+     }
+
+     @Override
+     public boolean equals(Object obj) {
+          return this.toString().equals(obj.toString());
      }
 }

@@ -30,7 +30,7 @@ public class IcndbVuFragment extends Fragment implements IcndbPresenter.IcndbVu 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.icndb_vu_linearlayout, container, false);
+        return inflater.inflate(R.layout.icndb_vu_fragment, container, false);
     }
 
     @Override

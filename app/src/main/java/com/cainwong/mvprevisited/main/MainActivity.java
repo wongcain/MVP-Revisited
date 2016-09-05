@@ -3,7 +3,6 @@ package com.cainwong.mvprevisited.main;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 import com.cainwong.mvprevisited.R;
 import com.cainwong.mvprevisited.giphy.GiphyVuFragment;
 import com.cainwong.mvprevisited.icndb.IcndbVuFragment;
-import com.jakewharton.rxbinding.support.v7.widget.RxToolbar;
 import com.jakewharton.rxrelay.PublishRelay;
 
 import butterknife.BindView;
@@ -69,6 +67,13 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Mai
     protected void onDestroy() {
         mPresenter.detachVu();
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(!mPresenter.handleBackpressed()){
+            super.onBackPressed();
+        }
     }
 
     @Override

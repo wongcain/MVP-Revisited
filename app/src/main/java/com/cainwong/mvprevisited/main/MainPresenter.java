@@ -52,11 +52,11 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
         // Subscribe to view clicks
         addToAutoUnsubscribe(
                 getVu().onGiphyRequest().subscribe(
-                        ignore -> mPlaceManager.gotoPlace(new GiphyPlace()),
+                        ignore -> mPlaceManager.gotoPlace(new GiphyPlace(), PlaceManager.HistoryAction.TRY_BACK_TO_SAME_TYPE),
                         Errors.log()
                 ),
                 getVu().onIcndbRequest().subscribe(
-                        ignore -> mPlaceManager.gotoPlace(new IcndbPlace()),
+                        ignore -> mPlaceManager.gotoPlace(new IcndbPlace(), PlaceManager.HistoryAction.TRY_BACK_TO_SAME_TYPE),
                         Errors.log()
                 )
         );
@@ -73,6 +73,9 @@ class MainPresenter extends BasePresenter<MainPresenter.MainVu> {
     protected void onVuDetached() {
     }
 
+    public boolean handleBackpressed() {
+        return mPlaceManager.goBack();
+    }
 
     public interface MainVu extends Vu {
         Observable<Void> onGiphyRequest();
