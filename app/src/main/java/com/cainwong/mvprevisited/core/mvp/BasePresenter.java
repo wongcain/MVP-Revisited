@@ -7,7 +7,7 @@ import com.cainwong.mvprevisited.core.di.ScopeManager;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-public abstract class BasePresenter<V extends Vu> {
+public class BasePresenter<V extends Vu> {
 
     private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
@@ -19,7 +19,8 @@ public abstract class BasePresenter<V extends Vu> {
         onVuAttached();
     }
 
-    protected abstract void onVuAttached();
+    protected void onVuAttached() {
+    }
 
     public final void detachVu() {
         mCompositeSubscription.clear();
@@ -27,14 +28,15 @@ public abstract class BasePresenter<V extends Vu> {
         mVu = null;
     }
 
-    protected abstract void onVuDetached();
+    protected void onVuDetached() {
+    }
 
     protected V getVu() {
         return mVu;
     }
 
     protected void addToAutoUnsubscribe(@NonNull Subscription... subscriptions) {
-        for(Subscription subscription: subscriptions) {
+        for (Subscription subscription : subscriptions) {
             mCompositeSubscription.add(subscription);
         }
     }

@@ -8,6 +8,8 @@ import rx.Observable;
 
 public interface IcndbApi {
 
+    String BASE_URL = "http://api.icndb.com";
+
     @GET("/jokes/random")
     Observable<Result<RandomJoke>> getRandomJoke();
 

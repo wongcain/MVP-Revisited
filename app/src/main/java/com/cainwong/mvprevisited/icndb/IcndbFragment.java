@@ -17,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class IcndbVuFragment extends Fragment implements IcndbPresenter.IcndbVu {
+public class IcndbFragment extends Fragment implements IcndbPresenter.IcndbVu {
 
     private final IcndbPresenter mPresenter = new IcndbPresenter();
 
@@ -56,7 +56,7 @@ public class IcndbVuFragment extends Fragment implements IcndbPresenter.IcndbVu 
         return RxView.clicks(mRefreshButton);
     }
 
-    public static IcndbVuFragment newInstance(){
-        return new IcndbVuFragment();
+    public static IcndbFragment newInstance(){
+        return new IcndbFragment();
     }
 }

@@ -9,8 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.cainwong.mvprevisited.R;
-import com.cainwong.mvprevisited.giphy.GiphyVuFragment;
-import com.cainwong.mvprevisited.icndb.IcndbVuFragment;
+import com.cainwong.mvprevisited.giphy.GiphyFragment;
+import com.cainwong.mvprevisited.icndb.IcndbFragment;
 import com.jakewharton.rxrelay.PublishRelay;
 
 import butterknife.BindView;
@@ -88,11 +88,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Mai
 
     @Override
     public void showGify() {
-        String tag = GiphyVuFragment.class.getName();
+        String tag = GiphyFragment.class.getName();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if(fragment==null || !fragment.isVisible()){
             if(fragment==null){
-                fragment = GiphyVuFragment.newInstance();
+                fragment = GiphyFragment.newInstance();
             }
             getSupportFragmentManager()
                     .beginTransaction()
@@ -103,11 +103,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Mai
 
     @Override
     public void showIcndb() {
-        String tag = IcndbVuFragment.class.getName();
+        String tag = IcndbFragment.class.getName();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if(fragment==null || !fragment.isVisible()){
             if(fragment==null){
-                fragment = IcndbVuFragment.newInstance();
+                fragment = IcndbFragment.newInstance();
             }
             getSupportFragmentManager()
                     .beginTransaction()

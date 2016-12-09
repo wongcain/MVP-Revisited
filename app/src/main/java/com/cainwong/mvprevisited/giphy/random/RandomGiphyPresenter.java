@@ -60,7 +60,7 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
                         .subscribe(
                                 place -> {
                                     String query = ((RandomGiphyPlace) place).getData();
-                                    if(query!=null){
+                                    if (query != null) {
                                         mLastQuery = query;
                                     }
                                     mRandomGiphyDM.setQuery(mLastQuery);
@@ -151,7 +151,7 @@ public class RandomGiphyPresenter extends BasePresenter<RandomGiphyPresenter.Ran
         }
     }
 
-    public interface RandomGifyVu extends Vu {
+    interface RandomGifyVu extends Vu {
 
         void setImgUrl(String imgUrl, String lowResImgUrl);
 

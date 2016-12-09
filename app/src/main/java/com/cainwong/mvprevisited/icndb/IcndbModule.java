@@ -15,8 +15,7 @@ public class IcndbModule extends Module {
 
     @Inject
     public IcndbModule(Gson gson, OkHttpClient okHttpClient) {
-        // TODO move base URL
-        final Retrofit retrofit = new Retrofit.Builder().baseUrl("http://api.icndb.com")
+        final Retrofit retrofit = new Retrofit.Builder().baseUrl(IcndbApi.BASE_URL)
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))

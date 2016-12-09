@@ -1,7 +1,5 @@
 package com.cainwong.mvprevisited.icndb;
 
-import android.text.Html;
-
 import com.cainwong.mvprevisited.core.lifecycle.Lifecycle;
 import com.cainwong.mvprevisited.core.mvp.BasePresenter;
 import com.cainwong.mvprevisited.core.mvp.Vu;
@@ -47,7 +45,7 @@ public class IcndbPresenter extends BasePresenter<IcndbPresenter.IcndbVu> {
                 mLifecycle.onLoadState().subscribe(
                         bundle -> {
                             mLastJoke = bundle.getString(JOKE_KEY);
-                            if(mLastJoke!=null){
+                            if (mLastJoke != null) {
                                 getVu().setJoke(mLastJoke);
                             }
                         },
@@ -77,14 +75,15 @@ public class IcndbPresenter extends BasePresenter<IcndbPresenter.IcndbVu> {
         addToAutoUnsubscribe(mIcndbRandomJokeDMSubscription);
     }
 
-    private void handleJokeResponse(RandomJoke response){
+    private void handleJokeResponse(RandomJoke response) {
         mLastJoke = response.getJoke().getText();
         getVu().setJoke(mLastJoke);
     }
 
-    public interface IcndbVu extends Vu {
+    interface IcndbVu extends Vu {
 
         void setJoke(String joke);
+
         Observable<Void> onRefreshRequest();
 
     }

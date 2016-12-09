@@ -27,19 +27,16 @@ public class TrendingGiphyPresenter extends BasePresenter<TrendingGiphyPresenter
 
     @Override
     protected void onVuAttached() {
-
         addToAutoUnsubscribe(
-
                 //handle Place
                 mPlaceManager.onGotoPlace(TrendingGiphyPlace.class).subscribe(
                         place -> query(),
                         Errors.log()
                 )
         );
-
     }
 
-    private void query(){
+    private void query() {
         addToAutoUnsubscribe(
                 mTrendingGiphyDM.getData().subscribe(
                         this::handleResults,
@@ -48,13 +45,13 @@ public class TrendingGiphyPresenter extends BasePresenter<TrendingGiphyPresenter
         );
     }
 
-    private void handleResults(TrendingGiphys trendingGiphys){
+    private void handleResults(TrendingGiphys trendingGiphys) {
         mList.clear();
         mList.addAll(trendingGiphys.getGiphys());
         List<String> imgUrls = new ArrayList<>(mList.size());
-        for(TrendingGiphys.Giphy giphy: mList){
+        for (TrendingGiphys.Giphy giphy : mList) {
             TrendingGiphys.Image image = giphy.getImage(TrendingGiphys.Giphy.ImageType.fixed_height_small_still);
-            if(image!=null) {
+            if (image != null) {
                 imgUrls.add(image.getUrl());
             } else {
                 Timber.w("Image size not found: %s - %s",
@@ -65,12 +62,7 @@ public class TrendingGiphyPresenter extends BasePresenter<TrendingGiphyPresenter
         getVu().setUriList(imgUrls);
     }
 
-    @Override
-    protected void onVuDetached() {
-
-    }
-
-    public interface TrendingGifyVu extends Vu {
+    interface TrendingGifyVu extends Vu {
         void setUriList(List<String> imgUrls);
     }
 

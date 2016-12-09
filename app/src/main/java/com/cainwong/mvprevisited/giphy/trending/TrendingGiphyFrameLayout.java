@@ -18,7 +18,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TrendingGiphyVuFrameLayout extends FrameLayout implements TrendingGiphyPresenter.TrendingGifyVu {
+public class TrendingGiphyFrameLayout extends FrameLayout implements TrendingGiphyPresenter.TrendingGifyVu {
 
     private final TrendingGiphyPresenter mPresenter = new TrendingGiphyPresenter();
 
@@ -29,7 +29,7 @@ public class TrendingGiphyVuFrameLayout extends FrameLayout implements TrendingG
     @BindView(R.id.trending_recylcer)
     RecyclerView mTrendingRecyclerView;
 
-    public TrendingGiphyVuFrameLayout(Context context, AttributeSet attrs) {
+    public TrendingGiphyFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

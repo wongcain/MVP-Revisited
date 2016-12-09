@@ -17,14 +17,14 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RandomGiphyVuFramelayout extends FrameLayout implements RandomGiphyPresenter.RandomGifyVu {
+public class RandomGiphyFramelayout extends FrameLayout implements RandomGiphyPresenter.RandomGifyVu {
 
     private final RandomGiphyPresenter mPresenter = new RandomGiphyPresenter();
 
     @BindView(R.id.random_image)
     SimpleDraweeView mRandomImageView;
 
-    public RandomGiphyVuFramelayout(Context context, AttributeSet attrs) {
+    public RandomGiphyFramelayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

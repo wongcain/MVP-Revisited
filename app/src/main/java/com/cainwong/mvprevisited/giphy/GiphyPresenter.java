@@ -59,12 +59,7 @@ public class GiphyPresenter extends BasePresenter<GiphyPresenter.GiphyVu> {
         }
     }
 
-    @Override
-    protected void onVuDetached() {
-
-    }
-
-    public interface GiphyVu extends Vu {
+    interface GiphyVu extends Vu {
         void showTrending();
 
         void showRandom();
